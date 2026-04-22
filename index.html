@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FundedNext Internal Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f8fc;
+    --white: #ffffff;
+    --brand: #4f46e5;
+    --brand-dark: #3730a3;
+    --brand-light: #ede9fe;
+    --navy: #1e1b4b;
+    --text: #111827;
+    --text2: #6b7280;
+    --text3: #9ca3af;
+    --border: #e5e7eb;
+    --border2: #d1d5db;
+    --green: #10b981;
+    --green-light: #d1fae5;
+    --warn: #f59e0b;
+    --warn-light: #fef3c7;
+    --red: #ef4444;
+    --red-light: #fee2e2;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+    --radius: 10px;
+    --font: 'Inter', -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; overflow-x: hidden; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+
+  /* TOPBAR */
+  .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; align-items: center; height: 56px; gap: 12px; }
+  .topbar-logo { width: 28px; height: 28px; background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; color: white; }
+  .topbar-name { font-weight: 700; font-size: 15px; color: var(--navy); }
+  .topbar-div { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+  .topbar-tool { font-size: 13px; color: var(--text2); }
+  .topbar-badge { margin-left: auto; font-size: 11px; color: var(--text3); background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; }
+
+  /* MAIN TABS */
+  .main-tabs { display: flex; background: var(--white); border-bottom: 2px solid var(--border); padding: 0 32px; gap: 0; overflow-x: auto; }
+  .main-tab { padding: 14px 22px; color: var(--text2); cursor: pointer; border-bottom: 3px solid transparent; font-size: 13px; font-weight: 600; transition: all 0.2s; margin-bottom: -2px; white-space: nowrap; }
+  .main-tab:hover { color: var(--brand); }
+  .main-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+  /* PAGE */
+  .page-container { max-width: 1000px; margin: 0 auto; padding: 32px 24px 80px; }
+  .tool-section { display: none; }
+  .tool-section.active { display: block; }
+
+  /* SHARED */
+  .step-label { font-size: 11px; font-weight: 600; color: var(--brand); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+  .step-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .tip { background: var(--brand-light); border: 1px solid #c4b5fd; border-radius: var(--radius); padding: 11px 14px; font-size: 12px; color: var(--brand-dark); margin-bottom: 14px; display: flex; gap: 8px; }
+  .warn-banner { background: var(--warn-light); border: 1px solid #fcd34d; border-radius: var(--radius); padding: 10px 14px; font-size: 12px; color: #92400e; margin-bottom: 10px; display: none; }
+  .warn-banner.visible { display: block; }
+  .error-banner { background: var(--red-light); border: 1px solid #fca5a5; border-radius: var(--radius); padding: 11px 14px; font-size: 12px; color: #991b1b; margin-bottom: 14px; display: none; }
+  .error-banner.visible { display: block; }
+  .btn-primary { background: var(--brand); color: white; border: none; border-radius: var(--radius); padding: 11px 28px; font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px; }
+  .btn-primary:hover { background: var(--brand-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .btn-ghost { background: var(--white); color: var(--text2); border: 1.5px solid var(--border2); border-radius: var(--radius); padding: 11px 18px; font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .btn-ghost:hover { border-color: var(--red); color: var(--red); }
+  .btn-sm { background: var(--white); color: var(--text2); border: 1.5px solid var(--border2); border-radius: 7px; padding: 6px 14px; font-family: var(--font); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .btn-sm:hover { border-color: var(--brand); color: var(--brand); }
+  .btn-sm.active { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+  .btn-sm.copied { border-color: var(--green); color: var(--green); background: var(--green-light); }
+  .section-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
+  .section-card-header { padding: 13px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .section-title { font-size: 14px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 10px; }
+  .reply-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: #faf9ff; }
+  .reply-label { font-size: 12px; font-weight: 600; color: var(--brand); text-transform: uppercase; letter-spacing: 0.06em; }
+  .reply-body { padding: 20px; font-size: 13px; color: var(--text); line-height: 2; white-space: pre-wrap; word-break: break-word; font-family: var(--font); background: var(--white); }
+  .disclaimer { margin-top: 40px; background: linear-gradient(135deg, #1e1b4b, #3730a3); border-radius: var(--radius); padding: 16px 20px; font-size: 12px; color: #c7d2fe; line-height: 1.7; }
+  .disclaimer strong { color: white; }
+
+  /* CONSISTENCY CALCULATOR */
+  .cc-subtitle-tabs { display: flex; background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 24px; }
+  .cc-sub-tab { flex: 1; padding: 12px; text-align: center; color: var(--text2); cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; border-right: 1px solid var(--border); }
+  .cc-sub-tab:last-child { border-right: none; }
+  .cc-sub-tab.active { background: var(--brand); color: white; }
+  .cc-sub-tab:hover:not(.active) { background: var(--bg); }
+  .cc-section { display: none; }
+  .cc-section.active { display: block; }
+  .cc-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
+  @media (max-width: 800px) { .cc-grid { grid-template-columns: 1fr; } }
+  .cc-card { background: var(--white); padding: 24px; border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); }
+  .cc-title { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 20px; text-align: center; }
+  .cc-form-group { margin-bottom: 16px; }
+  .cc-form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #374151; }
+  .cc-form-group select, .cc-form-group input[type="number"] { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border2); border-radius: 8px; font-size: 14px; outline: none; font-family: var(--font); }
+  .cc-form-group select:focus, .cc-form-group input:focus { border-color: var(--brand); }
+  .cc-day-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .cc-day-label { width: 54px; font-size: 12px; color: var(--text2); font-weight: 600; flex-shrink: 0; }
+  .cc-day-row input { flex: 1; padding: 10px 12px; border: 1.5px solid var(--border2); border-radius: 8px; font-size: 14px; outline: none; font-family: var(--font); }
+  .cc-day-row input:focus { border-color: var(--brand); }
+  .cc-remove-btn { background: var(--red-light); color: var(--red); border: none; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; flex-shrink: 0; }
+  .cc-remove-btn:hover { background: #fca5a5; }
+  .cc-add-btn { width: 100%; padding: 10px; background: var(--bg); border: 1.5px dashed var(--border2); border-radius: 8px; color: var(--brand); cursor: pointer; font-weight: 600; font-family: var(--font); font-size: 13px; margin-top: 8px; }
+  .cc-add-btn:hover { background: var(--brand-light); }
+  .cc-calc-btn { width: 100%; padding: 13px; background: var(--brand); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 16px; font-size: 14px; font-family: var(--font); transition: background 0.2s; }
+  .cc-calc-btn:hover { background: var(--brand-dark); }
+  .cc-result-label { font-size: 11px; text-transform: uppercase; color: var(--text3); letter-spacing: 1px; margin-bottom: 8px; }
+  .cc-result-value { font-size: 38px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+  .cc-status { padding: 10px; border-radius: 8px; font-weight: 700; font-size: 13px; text-align: center; }
+  .cc-status-pass { background: var(--green-light); color: #065f46; }
+  .cc-status-fail { background: var(--red-light); color: #991b1b; }
+  .cc-reply-box { margin-top: 24px; background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); display: none; overflow: hidden; }
+  .cc-reply-header { padding: 12px 16px; background: #faf9ff; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .cc-reply-header strong { font-size: 13px; color: var(--navy); }
+  .cc-reply-text { padding: 20px; font-size: 13px; line-height: 1.8; white-space: pre-wrap; color: #374151; }
+  .copy-btn { padding: 8px 16px; background: var(--brand); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: var(--font); }
+  .copy-btn:hover { background: var(--brand-dark); }
+
+  /* ACCOUNT MATCHER */
+  .am-header { margin-bottom: 24px; }
+  .am-header h2 { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+  .am-header p { font-size: 13px; color: var(--text2); }
+  .paste-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: border-color 0.15s; }
+  .paste-card:focus-within { border-color: #a5b4fc; }
+  .paste-card.has-data { border-color: var(--brand); }
+  .paste-card.zone-warn { border-color: var(--warn) !important; }
+  .paste-card-header { padding: 11px 14px; background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .paste-card-title { font-size: 12px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+  .type-pill { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+  .type-pill.demo { background: #dbeafe; color: #1d4ed8; }
+  .type-pill.real { background: var(--green-light); color: #065f46; }
+  .paste-count { font-size: 11px; color: var(--text3); font-weight: 500; }
+  .paste-count.active { color: var(--brand); font-weight: 600; }
+  .paste-count.warn-count { color: var(--warn); font-weight: 600; }
+  .am-textarea { width: 100%; min-height: 180px; border: none; outline: none; background: transparent; font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.6; padding: 12px 14px; color: var(--text2); resize: vertical; }
+  .am-textarea::placeholder { color: var(--text3); font-style: italic; }
+  .run-row { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+  .shortcut-hint { font-size: 11px; color: var(--text3); }
+  .shortcut-hint kbd { background: var(--white); border: 1px solid var(--border2); border-radius: 4px; padding: 1px 5px; font-size: 11px; font-family: var(--font); box-shadow: 0 1px 0 var(--border2); }
+  .parse-status { margin-left: auto; font-size: 12px; color: var(--text3); }
+  .results-section { display: none; animation: fadeUp 0.25s ease; }
+  .results-section.visible { display: block; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .result-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .result-ts { font-size: 11px; color: var(--text3); }
+  .result-ts span { color: var(--brand); font-weight: 600; }
+  .warnings-block { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .stats-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 640px) { .stats-bar { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+  .stat-card.s-brand { border-color: #a5b4fc; background: #faf9ff; }
+  .stat-card.s-red { border-color: #fca5a5; background: var(--red-light); }
+  .stat-card.s-warn { border-color: #fcd34d; background: var(--warn-light); }
+  .stat-card.s-green { border-color: #6ee7b7; background: var(--green-light); }
+  .stat-value { font-size: 26px; font-weight: 800; line-height: 1; margin-bottom: 3px; color: var(--navy); }
+  .stat-card.s-brand .stat-value { color: var(--brand); }
+  .stat-card.s-red .stat-value { color: var(--red); }
+  .stat-card.s-warn .stat-value { color: #b45309; }
+  .stat-card.s-green .stat-value { color: #065f46; }
+  .stat-label { font-size: 10px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.3; }
+  .stat-sub { font-size: 10px; color: var(--text3); margin-top: 3px; }
+  .count-badge { background: var(--brand); color: white; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; }
+  .section-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .am-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .am-table thead { background: var(--bg); }
+  .am-table th { padding: 10px 14px; text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); white-space: nowrap; border-bottom: 1px solid var(--border); }
+  .am-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text2); }
+  .am-table tr:last-child td { border-bottom: none; }
+  .am-table tr:hover td { background: #fafafa; }
+  .login-cell { font-family: 'Courier New', monospace; font-weight: 700; color: var(--navy); font-size: 13px; }
+  .plan-pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #dbeafe; color: #1d4ed8; }
+  .reached-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--green-light); color: #065f46; }
+  .dup-badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; background: var(--warn-light); color: #92400e; margin-left: 6px; }
+  .empty-state { padding: 48px 24px; text-align: center; }
+  .empty-state .icon { font-size: 36px; margin-bottom: 12px; }
+  .empty-state h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .empty-state p { font-size: 13px; color: var(--text2); }
+  .excluded-toggle { margin-top: 6px; background: none; border: none; font-family: var(--font); font-size: 12px; color: var(--text3); cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 6px 0; transition: color 0.15s; font-weight: 500; }
+  .excluded-toggle:hover { color: var(--red); }
+  .excluded-list { display: none; margin-top: 8px; background: var(--white); border: 1.5px solid #fca5a5; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .excluded-list.visible { display: block; }
+  .excluded-list table { opacity: 0.85; width: 100%; border-collapse: collapse; font-size: 13px; }
+  .excluded-list th { padding: 10px 14px; text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid var(--border); background: var(--bg); }
+  .excluded-list td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text2); }
+
+  /* BREACH MESSAGE TOOL */
+  .bt-header { margin-bottom: 24px; }
+  .bt-header h2 { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+  .bt-header p { font-size: 13px; color: var(--text2); }
+  .bt-form-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; margin-bottom: 20px; }
+  .bt-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .bt-form-grid { grid-template-columns: 1fr; } }
+  .bt-form-group { display: flex; flex-direction: column; gap: 6px; }
+  .bt-form-group label { font-size: 12px; font-weight: 600; color: #374151; }
+  .bt-form-group select, .bt-form-group input { padding: 10px 12px; border: 1.5px solid var(--border2); border-radius: 8px; font-size: 14px; font-family: var(--font); outline: none; background: var(--white); color: var(--text); }
+  .bt-form-group select:focus, .bt-form-group input:focus { border-color: var(--brand); }
+  .bt-form-group .hint { font-size: 11px; color: var(--text3); }
+  .bt-breach-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .bt-breach-tab { padding: 8px 18px; border: 1.5px solid var(--border2); border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text2); background: var(--white); transition: all 0.15s; font-family: var(--font); }
+  .bt-breach-tab:hover { border-color: var(--brand); color: var(--brand); }
+  .bt-breach-tab.active { background: var(--brand); color: white; border-color: var(--brand); }
+  .bt-inputs { display: none; }
+  .bt-inputs.visible { display: block; }
+  .bt-rule-box { background: var(--brand-light); border: 1px solid #c4b5fd; border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; font-size: 12px; color: var(--brand-dark); line-height: 1.8; }
+  .bt-rule-box strong { color: var(--navy); }
+  .bt-calc-row { display: flex; gap: 12px; align-items: center; margin-top: 20px; flex-wrap: wrap; }
+  .bt-result { display: none; animation: fadeUp 0.25s ease; }
+  .bt-result.visible { display: block; }
+  .bt-breakdown { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px; }
+  .bt-breakdown-header { padding: 12px 16px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.06em; }
+  .bt-breakdown-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .bt-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-radius: 8px; background: var(--bg); font-size: 13px; }
+  .bt-row-label { color: var(--text2); font-weight: 500; }
+  .bt-row-value { font-weight: 700; color: var(--navy); font-family: 'Courier New', monospace; font-size: 14px; }
+  .bt-row.breach-row { background: var(--red-light); }
+  .bt-row.breach-row .bt-row-label { color: #991b1b; }
+  .bt-row.breach-row .bt-row-value { color: var(--red); }
+  .bt-row.compliant-row { background: var(--green-light); }
+  .bt-row.compliant-row .bt-row-label { color: #065f46; }
+  .bt-row.compliant-row .bt-row-value { color: var(--green); }
+  .bt-row.highlight-row { background: var(--warn-light); }
+  .bt-row.highlight-row .bt-row-value { color: #92400e; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">FN</div>
+  <div class="topbar-name">FundedNext</div>
+  <div class="topbar-div"></div>
+  <div class="topbar-tool">Internal Tools</div>
+  <div class="topbar-badge">Agent Use Only</div>
+</div>
+
+<div class="main-tabs">
+  <div class="main-tab active"   onclick="switchMainTab('consistency')">📊 Consistency Calculator</div>
+  <div class="main-tab"          onclick="switchMainTab('matcher')">🔍 Account Matcher</div>
+  <div class="main-tab"          onclick="switchMainTab('breach')">⚠️ Breach Message Tool</div>
+</div>
+
+<div class="page-container">
+
+<!-- TAB 1: CONSISTENCY CALCULATOR -->
+<div id="tool-consistency" class="tool-section active">
+  <div class="cc-subtitle-tabs">
+    <div class="cc-sub-tab active" onclick="switchCCTab('legacy')">Legacy / Bolt</div>
+    <div class="cc-sub-tab" onclick="switchCCTab('rapid')">Rapid</div>
+  </div>
+
+  <div id="cc-legacy" class="cc-section active">
+    <h3 class="cc-title">Legacy/Bolt Profit Target</h3>
+    <div class="cc-grid">
+      <div class="cc-card">
+        <div class="cc-form-group">
+          <label>Account Size</label>
+          <select id="l-size">
+            <option value="25000">$25,000 (Target: $1,250)</option>
+            <option value="50000">$50,000 (Target: $3,000)</option>
+            <option value="100000">$100,000 (Target: $6,000)</option>
+            <option value="bolt">Bolt $50,000 (Target: $3,000)</option>
+          </select>
+        </div>
+        <label style="font-size:13px;font-weight:600;color:#374151;margin-bottom:8px;display:block;">Daily Profits/Losses</label>
+        <div id="l-rows">
+          <div class="cc-day-row">
+            <span class="cc-day-label">Day 1</span>
+            <input type="number" class="l-input" placeholder="0.00">
+            <button class="cc-remove-btn" onclick="ccRemoveRow(this,'l')">×</button>
+          </div>
+        </div>
+        <button class="cc-add-btn" onclick="ccAddRow('l')">+ Add Trading Day</button>
+        <button class="cc-calc-btn" onclick="calculateLegacy()">Calculate Final Target</button>
+      </div>
+      <div class="cc-card" style="text-align:center;">
+        <div class="cc-result-label">Updated Profit Target</div>
+        <div id="l-res-val" class="cc-result-value">$0.00</div>
+        <div id="l-status" class="cc-status" style="display:none;"></div>
+      </div>
+    </div>
+    <div id="l-reply-container" class="cc-reply-box">
+      <div class="cc-reply-header">
+        <strong>Ready-to-Send Reply</strong>
+        <button class="copy-btn" onclick="ccCopyMessage('l-msg-text',this)">Copy Message</button>
+      </div>
+      <div id="l-msg-text" class="cc-reply-text"></div>
+    </div>
+  </div>
+
+  <div id="cc-rapid" class="cc-section">
+    <h3 class="cc-title">Rapid Consistency Check</h3>
+    <div class="cc-grid">
+      <div class="cc-card">
+        <label style="font-size:13px;font-weight:600;color:#374151;margin-bottom:8px;display:block;">Daily Profits/Losses</label>
+        <div id="r-rows">
+          <div class="cc-day-row">
+            <span class="cc-day-label">Day 1</span>
+            <input type="number" class="r-input" placeholder="0.00">
+            <button class="cc-remove-btn" onclick="ccRemoveRow(this,'r')">×</button>
+          </div>
+        </div>
+        <button class="cc-add-btn" onclick="ccAddRow('r')">+ Add Trading Day</button>
+        <button class="cc-calc-btn" onclick="calculateRapid()">Check Consistency</button>
+      </div>
+      <div class="cc-card" style="text-align:center;">
+        <div class="cc-result-label">Consistency Percentage</div>
+        <div id="r-res-val" class="cc-result-value">0.00%</div>
+        <div id="r-status" class="cc-status" style="display:none;"></div>
+      </div>
+    </div>
+    <div id="r-reply-container" class="cc-reply-box">
+      <div class="cc-reply-header">
+        <strong>Ready-to-Send Reply</strong>
+        <button class="copy-btn" onclick="ccCopyMessage('r-msg-text',this)">Copy Message</button>
+      </div>
+      <div id="r-msg-text" class="cc-reply-text"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: ACCOUNT MATCHER -->
+<div id="tool-matcher" class="tool-section">
+  <div class="am-header">
+    <h2>Account Matcher</h2>
+    <p>Identify Challenge accounts that reached the profit target but have not yet received a FundedNext account</p>
+  </div>
+
+  <div class="step-label">Step 01 — Paste All Account Data</div>
+  <div class="tip">
+    <span>💡</span>
+    <div><strong>How to copy from Intercom:</strong> Click anywhere on the account table header row, then press <strong>Ctrl+Shift+End</strong> to select all rows. Then press <strong>Ctrl+C</strong> to copy. Paste everything below — Challenge and FundedNext accounts will be auto-separated.</div>
+  </div>
+
+  <div id="warn-pagination" class="warn-banner"></div>
+
+  <div class="paste-card" id="zone-all" style="margin-bottom:14px;">
+    <div class="paste-card-header">
+      <div class="paste-card-title">All Accounts <span class="type-pill demo" style="margin-left:4px">Demo</span> <span class="type-pill real" style="margin-left:2px">Real</span></div>
+      <div style="display:flex;gap:16px;align-items:center;">
+        <div class="paste-count" id="count-challenge">Demo: —</div>
+        <div class="paste-count" id="count-funded">Real: —</div>
+        <div class="paste-count" id="count-total">Total: —</div>
+      </div>
+    </div>
+    <textarea class="am-textarea" id="paste-all" style="min-height:220px" placeholder="In Intercom, click on the account table header row.&#10;Press Ctrl+Shift+End to select all rows, then Ctrl+C to copy.&#10;Paste here — Challenge and FundedNext accounts will be auto-separated."></textarea>
+  </div>
+
+  <div class="error-banner" id="error-banner"></div>
+
+  <div class="step-label">Step 02 — Run Matcher</div>
+  <div class="run-row">
+    <button class="btn-primary" onclick="runMatcher()">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2L13 8L3 14V2Z" fill="currentColor"/></svg>
+      Run Matcher
+    </button>
+    <button class="btn-ghost" onclick="clearAll()">Clear All</button>
+    <span class="shortcut-hint">or press <kbd>Ctrl</kbd>+<kbd>Enter</kbd></span>
+    <div class="parse-status" id="parse-status"></div>
+  </div>
+
+  <div class="results-section" id="results-section">
+    <div class="step-label">Step 03 — Results</div>
+    <div class="result-meta"><div class="result-ts">Results as of <span id="result-time">—</span></div></div>
+    <div class="warnings-block" id="warnings-block"></div>
+    <div class="stats-bar">
+      <div class="stat-card"><div class="stat-value" id="stat-total-challenge">0</div><div class="stat-label">Challenge Accounts</div></div>
+      <div class="stat-card s-red"><div class="stat-value" id="stat-excluded">0</div><div class="stat-label">Excluded</div><div class="stat-sub" id="stat-excluded-sub"></div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-funded-count">0</div><div class="stat-label">FundedNext Accounts</div></div>
+      <div class="stat-card" id="stat-cap-card"><div class="stat-value" id="stat-active-funded">0</div><div class="stat-label">Active Funded (max 5)</div><div class="stat-sub" id="stat-cap-sub"></div></div>
+      <div class="stat-card s-brand"><div class="stat-value" id="stat-unmatched">0</div><div class="stat-label">Eligible to Convert</div></div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-header">
+        <div class="section-title">Unmatched — Eligible for Conversion <span class="count-badge" id="badge-count">0</span></div>
+        <div class="section-actions">
+          <button class="btn-sm" id="btn-reply" onclick="toggleReply()">✉ Client Reply</button>
+          <button class="btn-sm" id="btn-copy" onclick="copyTable()">Copy Table</button>
+        </div>
+      </div>
+      <div class="empty-state" id="empty-state" style="display:none;">
+        <div class="icon">✅</div>
+        <h3>No unmatched accounts found</h3>
+        <p>All Challenge accounts that reached their profit target already have a corresponding FundedNext account.</p>
+      </div>
+      <table class="am-table" id="results-table">
+        <thead><tr><th>#</th><th>Login (Account #)</th><th>Type</th><th>Plan</th><th>Balance</th><th>Equity</th><th>PnL</th><th>Status</th></tr></thead>
+        <tbody id="results-tbody"></tbody>
+      </table>
+    </div>
+    <div id="reply-section" style="display:none;">
+      <div class="section-card">
+        <div class="reply-header">
+          <div class="reply-label">✉ Client Reply</div>
+          <button class="btn-sm" id="btn-copy-reply" onclick="copyReply()">Copy Reply</button>
+        </div>
+        <div class="reply-body" id="reply-text"></div>
+      </div>
+    </div>
+    <button class="excluded-toggle" id="excluded-toggle" onclick="toggleExcluded()">▶ Show excluded accounts</button>
+    <div class="excluded-list" id="excluded-list">
+      <table><thead><tr><th>Login</th><th>Type</th><th>Plan</th><th>Reason</th></tr></thead><tbody id="excluded-tbody"></tbody></table>
+    </div>
+  </div>
+  <div class="disclaimer" style="margin-top:32px;">
+    <strong>Internal Use Only:</strong> Results are based on copied account data and should be verified in Intercom before taking action. Data never leaves your browser.
+  </div>
+</div>
+
+<!-- TAB 3: BREACH MESSAGE TOOL -->
+<div id="tool-breach" class="tool-section">
+  <div class="bt-header">
+    <h2>Futures Breach Message Tool</h2>
+    <p>Generate a detailed breach explanation and client reply based on account data</p>
+  </div>
+
+  <div class="step-label">Step 01 — Select Account Details</div>
+  <div class="bt-form-card">
+    <div class="bt-form-grid">
+      <div class="bt-form-group">
+        <label>Account Type</label>
+        <select id="bt-account-type" onchange="btUpdateUI()">
+          <option value="">— Select Account Type —</option>
+          <option value="bolt">Bolt Challenge</option>
+          <option value="rapid">Rapid Challenge</option>
+          <option value="legacy">Legacy Challenge</option>
+        </select>
+      </div>
+      <div class="bt-form-group">
+        <label>Account Size</label>
+        <select id="bt-account-size" onchange="btUpdateRule()">
+          <option value="">— Select Size —</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-label">Step 02 — Select Breach Type</div>
+  <div class="bt-breach-tabs">
+    <button class="bt-breach-tab active" onclick="btSelectBreach('mll', this)">Monthly Loss Limit (MLL)</button>
+    <button class="bt-breach-tab" onclick="btSelectBreach('dll', this)">Daily Loss Limit (DLL)</button>
+    <button class="bt-breach-tab" onclick="btSelectBreach('inactivity', this)">Inactivity</button>
+  </div>
+
+  <!-- MLL INPUTS -->
+  <div id="bt-mll-inputs" class="bt-inputs visible">
+    <div class="bt-rule-box" id="bt-mll-rule">
+      Please select an account type and size above to see the MLL rule.
+    </div>
+    <div class="bt-form-card">
+      <div class="bt-form-grid">
+        <div class="bt-form-group">
+          <label>Starting Balance (Account Opening Balance)</label>
+          <input type="number" id="bt-start-bal" placeholder="e.g. 50000" oninput="btUpdateRule()">
+          <span class="hint" style="font-size:11px;color:var(--text3);margin-top:4px;">The original account balance when it was opened</span>
+        </div>
+        <div class="bt-form-group">
+          <label>Highest Balance Reached</label>
+          <input type="number" id="bt-high-bal" placeholder="e.g. 53000" oninput="btUpdateRule()">
+          <span class="hint" style="font-size:11px;color:var(--text3);margin-top:4px;">
+            <span id="bt-high-bal-hint">Bolt: highest intraday balance. Rapid/Legacy: highest EOD balance.</span>
+          </span>
+        </div>
+        <div class="bt-form-group">
+          <label>Current Balance</label>
+          <input type="number" id="bt-current-bal" placeholder="e.g. 47500" oninput="btUpdateRule()">
+          <span class="hint" style="font-size:11px;color:var(--text3);margin-top:4px;">The balance at the time of review</span>
+        </div>
+        <div class="bt-form-group" style="justify-content:flex-end;">
+          <div id="bt-mll-live" style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:14px;font-size:12px;color:var(--text2);line-height:1.9;">
+            Enter values above to see live calculation
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DLL INPUTS -->
+  <div id="bt-dll-inputs" class="bt-inputs">
+    <div class="bt-rule-box" id="bt-dll-rule">
+      Please select an account type and size above to see the DLL rule.
+    </div>
+    <div class="bt-form-card">
+      <div class="bt-form-grid">
+        <div class="bt-form-group">
+          <label>Balance at Start of Trading Day</label>
+          <input type="number" id="bt-dll-open" placeholder="e.g. 50000">
+          <span class="hint" style="font-size:11px;color:var(--text3);margin-top:4px;">Balance when the trading day began</span>
+        </div>
+        <div class="bt-form-group">
+          <label>Lowest Balance Reached (Intraday)</label>
+          <input type="number" id="bt-dll-low" placeholder="e.g. 48800">
+          <span class="hint" style="font-size:11px;color:var(--text3);margin-top:4px;">Lowest point the balance reached during the day</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INACTIVITY INPUTS -->
+  <div id="bt-inactivity-inputs" class="bt-inputs">
+    <div class="bt-rule-box">
+      The Inactivity rule requires that the account must have at least <strong>1 trading day every 30 calendar days</strong>. If no trades are placed within a 30-day period, the account is automatically breached due to inactivity.
+    </div>
+    <div class="bt-form-card">
+      <div class="bt-form-grid">
+        <div class="bt-form-group">
+          <label>Last Trading Date</label>
+          <input type="date" id="bt-last-trade" style="padding:10px 12px;border:1.5px solid var(--border2);border-radius:8px;font-size:14px;font-family:var(--font);outline:none;">
+        </div>
+        <div class="bt-form-group">
+          <label>Review Date</label>
+          <input type="date" id="bt-breach-date" style="padding:10px 12px;border:1.5px solid var(--border2);border-radius:8px;font-size:14px;font-family:var(--font);outline:none;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-label">Step 03 — Generate Message</div>
+  <div class="bt-calc-row">
+    <button class="btn-primary" onclick="btGenerate()">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2L13 8L3 14V2Z" fill="currentColor"/></svg>
+      Generate Message
+    </button>
+    <button class="btn-ghost" onclick="btClear()">Clear</button>
+  </div>
+
+  <div class="error-banner" id="bt-error-banner"></div>
+
+  <!-- RESULT -->
+  <div class="bt-result" id="bt-result">
+    <div class="step-label">Step 04 — Result</div>
+    <div class="bt-breakdown" id="bt-breakdown">
+      <div class="bt-breakdown-header">📊 Account Status Breakdown</div>
+      <div class="bt-breakdown-body" id="bt-breakdown-body"></div>
+    </div>
+    <div class="section-card">
+      <div class="reply-header">
+        <div class="reply-label">✉ Client Reply</div>
+        <button class="btn-sm" id="bt-copy-reply-btn" onclick="btCopyReply()">Copy Reply</button>
+      </div>
+      <div class="reply-body" id="bt-reply-text"></div>
+    </div>
+  </div>
+
+  <div class="disclaimer" style="margin-top:32px;">
+    <strong>Internal Use Only:</strong> Always verify figures against actual account data in Intercom. Data never leaves your browser.
+  </div>
+</div>
+
+</div>
+
+<script>
+// MAIN TAB SWITCHING
+function switchMainTab(tab) {
+  const tabs = ['consistency','matcher','breach'];
+  document.querySelectorAll('.main-tab').forEach((t,i) => t.classList.toggle('active', tabs[i]===tab));
+  tabs.forEach(t => document.getElementById('tool-'+t).classList.toggle('active', t===tab));
+}
+
+// CONSISTENCY CALCULATOR
+function switchCCTab(type) {
+  document.querySelectorAll('.cc-sub-tab').forEach((t,i) => t.classList.toggle('active', (type==='legacy'&&i===0)||(type==='rapid'&&i===1)));
+  document.getElementById('cc-legacy').classList.toggle('active', type==='legacy');
+  document.getElementById('cc-rapid').classList.toggle('active', type==='rapid');
+}
+function ccAddRow(prefix) {
+  const container = document.getElementById(prefix+'-rows');
+  const nextDay = container.children.length + 1;
+  const row = document.createElement('div');
+  row.className = 'cc-day-row';
+  row.innerHTML = `<span class="cc-day-label">Day ${nextDay}</span><input type="number" class="${prefix}-input" placeholder="0.00"><button class="cc-remove-btn" onclick="ccRemoveRow(this,'${prefix}')">×</button>`;
+  container.appendChild(row);
+}
+function ccRemoveRow(btn, prefix) {
+  const container = document.getElementById(prefix+'-rows');
+  if (container.children.length > 1) {
+    btn.parentElement.remove();
+    Array.from(container.children).forEach((row,i) => row.querySelector('.cc-day-label').textContent = 'Day '+(i+1));
+  }
+}
+function calculateLegacy() {
+  const sizeValue = document.getElementById('l-size').value;
+  const targets = {'25000':1250,'50000':3000,'100000':6000,'bolt':3000};
+  const baseTarget = targets[sizeValue];
+  const allowedLimit = baseTarget * 0.40;
+  let totalProfit=0, highestDay=0;
+  document.querySelectorAll('.l-input').forEach(input => {
+    const val = parseFloat(input.value)||0;
+    totalProfit += val;
+    if (val > highestDay) highestDay = val;
+  });
+  const isViolated = highestDay > allowedLimit;
+  const finalTarget = isViolated ? (highestDay/0.4) : baseTarget;
+  document.getElementById('l-res-val').textContent = '$'+finalTarget.toLocaleString(undefined,{minimumFractionDigits:2});
+  const status = document.getElementById('l-status');
+  status.style.display='block'; status.className='cc-status '+(isViolated?'cc-status-fail':'cc-status-pass');
+  status.textContent = isViolated ? '❌ Consistency Rule Violated' : '✅ Compliant';
+  const msg = `Hello,\n\nI have reviewed your account performance. Your highest profit day was $${highestDay.toFixed(2)}.\n\n${isViolated?'According to the consistency rule, no single day can exceed 40% of the target ($'+allowedLimit.toFixed(2)+'). Because of this, your profit target has been updated to $'+finalTarget.toFixed(2)+'.':'Your account is fully compliant with the consistency rules.'}\n\nPlease let me know if you have any further questions.\n\nBest regards,\nFundedNext Support Team`;
+  document.getElementById('l-msg-text').textContent = msg;
+  document.getElementById('l-reply-container').style.display='block';
+}
+function calculateRapid() {
+  let totalProfit=0, highestDay=0;
+  document.querySelectorAll('.r-input').forEach(input => {
+    const val = parseFloat(input.value)||0;
+    totalProfit += val;
+    if (val > highestDay) highestDay = val;
+  });
+  const ratio = totalProfit>0 ? (highestDay/totalProfit)*100 : 0;
+  const isEligible = ratio<=40 && totalProfit>0;
+  document.getElementById('r-res-val').textContent = ratio.toFixed(2)+'%';
+  const status = document.getElementById('r-status');
+  status.style.display='block'; status.className='cc-status '+(isEligible?'cc-status-pass':'cc-status-fail');
+  status.textContent = isEligible ? '✅ Eligible for Withdrawal' : '❌ Ratio too high (>40%)';
+  const msg = `Hello,\n\nReviewing your Rapid account: your total profit is $${totalProfit.toFixed(2)} and your highest day is $${highestDay.toFixed(2)}.\n\nYour consistency ratio is ${ratio.toFixed(2)}%.\n${isEligible?'You are now eligible to request your withdrawal.':'To become eligible, you must continue trading to bring your highest day below 40% of your total profit.'}\n\nBest regards,\nFundedNext Support Team`;
+  document.getElementById('r-msg-text').textContent = msg;
+  document.getElementById('r-reply-container').style.display='block';
+}
+async function ccCopyMessage(textId, btn) {
+  const text = document.getElementById(textId).textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    const orig = btn.textContent; btn.textContent='✓ Copied!'; btn.style.background='#10B981';
+    setTimeout(()=>{btn.textContent=orig;btn.style.background='';},2000);
+  } catch(e) {
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    btn.textContent='✓ Copied!'; setTimeout(()=>btn.textContent='Copy Message',2000);
+  }
+}
+
+// ACCOUNT MATCHER
+const DATA_LINE_RE = /\b(\d{9})\s+\S+\s+(?:YES|NO)\s+\S+\s+(Null|\d{9})\b/i;
+
+function extractRecord(text) {
+  const match = DATA_LINE_RE.exec(text);
+  if (!match) return null;
+  const login=match[1], parentRaw=match[2];
+  const parentAccount = /^\d{9}$/.test(parentRaw) ? parentRaw : 'Null';
+  const planMatch = text.match(/\b(\d{1,3}K)\b/i);
+  const plan = planMatch ? planMatch[1].toUpperCase() : '—';
+  const typeMatch = text.match(/Futures\s+(?:Legacy\s+|Rapid\s+)?(?:Real\s+Account|Demo|DMA)/i);
+  const accountType = typeMatch ? typeMatch[0].trim() : '—';
+  const numTokens = text.split(/\s+/).filter(t=>/^-?\d+(\.\d+)?$/.test(t)&&t.length<=10&&!/^\d{9}$/.test(t));
+  const balance=numTokens.length>=3?numTokens[numTokens.length-3]:'—';
+  const equity=numTokens.length>=2?numTokens[numTokens.length-2]:'—';
+  const pnl=numTokens.length>=1?numTokens[numTokens.length-1]:'—';
+  const t=text.toLowerCase();
+  let breachedby=null;
+  if(t.includes('profit target reached')) breachedby='Profit Target Reached';
+  else if(t.includes('monthly loss limit')) breachedby='Monthly Loss Limit';
+  else if(t.includes('daily loss limit')) breachedby='Daily Loss Limit';
+  else if(t.includes('inactivity')) breachedby='Inactivity';
+  const breachedYesNo=text.match(/\b(Yes|No)\b/);
+  const isBreachedYes=breachedYesNo?breachedYesNo[1]==='Yes':null;
+  return {login,parentAccount,accountType,plan,balance,equity,pnl,breachedby,isBreachedYes};
+}
+function parseAccounts(rawText) {
+  const lines=rawText.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  const indices=[];
+  for(let i=0;i<lines.length;i++){if(DATA_LINE_RE.test(lines[i]))indices.push(i);}
+  const accounts=[];
+  for(let d=0;d<indices.length;d++){
+    const start=indices[d],end=indices[d+1]!==undefined?indices[d+1]:Math.min(start+8,lines.length);
+    const record=extractRecord(lines.slice(start,end).join(' '));
+    if(record)accounts.push(record);
+  }
+  return accounts;
+}
+function findDuplicates(accounts){
+  const seen={};
+  accounts.forEach(a=>{seen[a.login]=(seen[a.login]||0)+1;});
+  return new Set(Object.keys(seen).filter(k=>seen[k]>1));
+}
+(function setupLiveCounter(){
+  const ta=document.getElementById('paste-all'),zone=document.getElementById('zone-all');
+  const countChEl=document.getElementById('count-challenge'),countFnEl=document.getElementById('count-funded'),countTotalEl=document.getElementById('count-total');
+  const warnEl=document.getElementById('warn-pagination');
+  ta.addEventListener('input',()=>{
+    const val=ta.value.trim();
+    if(!val){zone.classList.remove('has-data','zone-warn');countChEl.textContent='Demo: —';countFnEl.textContent='Real: —';countTotalEl.textContent='Total: —';countChEl.className=countFnEl.className=countTotalEl.className='paste-count';warnEl.classList.remove('visible');return;}
+    const lines=val.split('\n');let demoCount=0,realCount=0;
+    lines.forEach(l=>{const m=/\b(\d{9})\s+\S+\s+(?:YES|NO)\s+\S+\s+(Null|\d{9})\b/i.exec(l);if(m){if(/^null$/i.test(m[2]))demoCount++;else realCount++;}});
+    const total=demoCount+realCount,pagWarn=total>=490;
+    zone.classList.toggle('has-data',total>0);zone.classList.toggle('zone-warn',pagWarn);
+    countChEl.textContent=`Demo: ${demoCount}`;countChEl.className=`paste-count ${demoCount>0?'active':''}`;
+    countFnEl.textContent=`Real: ${realCount}`;countFnEl.className=`paste-count ${realCount>0?'active':''}`;
+    countTotalEl.textContent=`Total: ${total}${pagWarn?' ⚠':''}`;countTotalEl.className=`paste-count ${total>0?(pagWarn?'warn-count':'active'):''}`;
+    if(pagWarn){warnEl.textContent=`⚠ ${total} records detected — near Intercom's 500-row limit. If the client has more accounts, copy the next page too.`;warnEl.classList.add('visible');}
+    else warnEl.classList.remove('visible');
+  });
+})();
+
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();if(document.getElementById('tool-matcher').classList.contains('active'))runMatcher();}});
+
+let lastResults=[],lastExcluded=[],lastAllChallenge=[],replyVisible=false;
+
+function runMatcher(){
+  const rawText=document.getElementById('paste-all').value.trim();
+  document.getElementById('error-banner').classList.remove('visible');
+  if(!rawText){showError('Please paste account data.');return;}
+  document.getElementById('parse-status').textContent='Parsing…';
+  const allRecords=parseAccounts(rawText);
+  if(!allRecords.length){showError('No records found. Try copying the full Intercom table again.');document.getElementById('parse-status').textContent='';return;}
+  const allChallenge=allRecords.filter(a=>a.parentAccount==='Null');
+  const allFunded=allRecords.filter(a=>a.parentAccount!=='Null');
+  if(!allChallenge.length){showError('No Challenge (Demo) accounts found.');document.getElementById('parse-status').textContent='';return;}
+  if(!allFunded.length){showError('No FundedNext (Real) accounts found.');document.getElementById('parse-status').textContent='';return;}
+  const challengeDups=findDuplicates(allChallenge),fundedDups=findDuplicates(allFunded);
+  const profitTargetAccounts=allChallenge.filter(a=>a.breachedby==='Profit Target Reached');
+  const excluded=allChallenge.filter(a=>a.breachedby!==null&&a.breachedby!=='Profit Target Reached');
+  const neverReached=allChallenge.filter(a=>a.breachedby===null);
+  const parentAccountSet=new Set(allFunded.map(a=>a.parentAccount).filter(p=>p!=='Null'));
+  const activeFunded=allFunded.filter(a=>a.isBreachedYes===false).length;
+  const slotsLeft=Math.max(0,5-activeFunded);
+  const unmatched=profitTargetAccounts.filter(a=>!parentAccountSet.has(a.login));
+  lastResults=unmatched;lastExcluded=excluded;lastAllChallenge=allChallenge;
+  document.getElementById('result-time').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('stat-total-challenge').textContent=allChallenge.length;
+  document.getElementById('stat-excluded').textContent=excluded.length+neverReached.length;
+  document.getElementById('stat-excluded-sub').textContent=`${excluded.length} breached · ${neverReached.length} pending`;
+  document.getElementById('stat-funded-count').textContent=allFunded.length;
+  document.getElementById('stat-unmatched').textContent=unmatched.length;
+  document.getElementById('badge-count').textContent=unmatched.length;
+  document.getElementById('stat-active-funded').textContent=activeFunded;
+  const capCard=document.getElementById('stat-cap-card');
+  capCard.className='stat-card '+(activeFunded>=5?'s-red':activeFunded>=3?'s-warn':'s-green');
+  document.getElementById('stat-cap-sub').textContent=activeFunded>=5?'⚠ Cap reached':`${slotsLeft} slot${slotsLeft!==1?'s':''} remaining`;
+  const warnings=[];
+  if(challengeDups.size)warnings.push(`⚠ ${challengeDups.size} duplicate Login ID${challengeDups.size>1?'s':''} in Challenge accounts.`);
+  if(fundedDups.size)warnings.push(`⚠ ${fundedDups.size} duplicate Login ID${fundedDups.size>1?'s':''} in FundedNext accounts.`);
+  if(activeFunded>=5&&unmatched.length)warnings.push('⚠ Client has 5 active FundedNext accounts (cap reached). One must be paused or breached before a new one can be created.');
+  document.getElementById('warnings-block').innerHTML=warnings.map(w=>`<div class="warn-banner visible" style="margin-bottom:0">${w}</div>`).join('');
+  const tbody=document.getElementById('results-tbody'),emptyState=document.getElementById('empty-state'),table=document.getElementById('results-table');
+  if(!unmatched.length){tbody.innerHTML='';table.style.display='none';emptyState.style.display='block';}
+  else{
+    table.style.display='table';emptyState.style.display='none';
+    tbody.innerHTML=unmatched.map((a,i)=>`<tr>
+      <td style="color:var(--text3);font-size:12px">${i+1}</td>
+      <td class="login-cell">${a.login}${challengeDups.has(a.login)?'<span class="dup-badge">DUP</span>':''}</td>
+      <td style="font-size:12px;color:var(--text2)">${a.accountType}</td>
+      <td><span class="plan-pill">${a.plan}</span></td>
+      <td style="font-family:'Courier New',monospace">${a.balance}</td>
+      <td style="font-family:'Courier New',monospace">${a.equity}</td>
+      <td style="font-family:'Courier New',monospace;color:${parseFloat(a.pnl)>=0?'var(--green)':'var(--red)'}">${a.pnl}</td>
+      <td><span class="reached-badge">✓ Reached</span></td></tr>`).join('');
+  }
+  document.getElementById('excluded-tbody').innerHTML=[
+    ...excluded.map(a=>`<tr><td class="login-cell">${a.login}</td><td style="font-size:12px;color:var(--text2)">${a.accountType}</td><td><span class="plan-pill">${a.plan}</span></td><td style="color:var(--red);font-size:12px">${a.breachedby}</td></tr>`),
+    ...neverReached.map(a=>`<tr><td class="login-cell">${a.login}</td><td style="font-size:12px;color:var(--text2)">${a.accountType}</td><td><span class="plan-pill">${a.plan}</span></td><td style="color:var(--text3);font-size:12px">Target not reached</td></tr>`)
+  ].join('');
+  const totalExcluded=excluded.length+neverReached.length;
+  document.getElementById('excluded-toggle').textContent=`▶ Show excluded accounts — ${totalExcluded} not shown`;
+  buildMatcherReply(unmatched,activeFunded,slotsLeft);
+  document.getElementById('reply-section').style.display='none';
+  document.getElementById('btn-reply').textContent='✉ Client Reply';
+  document.getElementById('btn-reply').classList.remove('active');
+  replyVisible=false;
+  document.getElementById('parse-status').textContent=`Parsed ${allRecords.length} total — ${allChallenge.length} challenge + ${allFunded.length} FundedNext`;
+  document.getElementById('results-section').classList.add('visible');
+  document.getElementById('results-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function buildMatcherReply(unmatched,activeFunded,slotsLeft){
+  let reply='';
+  if(unmatched.length===0){
+    reply=`Thank you for reaching out to FundedNext Support.\n\nI have reviewed your account and can confirm that all of your Challenge accounts that have successfully reached the profit target have already been converted to FundedNext accounts.\n\nIf you believe a specific account has not been converted, please share the Login ID and I will be happy to investigate further.\n\nThank you for trading with FundedNext. If you have any other questions, please feel free to reach out.\n\nBest regards,\nFundedNext Support Team`;
+  } else if(activeFunded>=5){
+    const loginList=unmatched.map((a,i)=>`  ${i+1}. Login ID: ${a.login} (${a.plan})`).join('\n');
+    reply=`Thank you for reaching out to FundedNext Support.\n\nI have reviewed your account and identified the following Challenge account${unmatched.length>1?'s':''} that ${unmatched.length>1?'have':'has'} successfully reached the profit target but ${unmatched.length>1?'have':'has'} not yet been converted to a FundedNext account:\n\n${loginList}\n\nHowever, please note that you currently have ${activeFunded} active FundedNext accounts, which is the maximum allowed (5). To proceed with a new conversion, one of your existing active FundedNext accounts would need to be paused or breached first in order to make room for the new account.\n\nOnce you have made room, please let me know and I will create a ticket with our relevant team.\n\nBest regards,\nFundedNext Support Team`;
+  } else {
+    const loginList=unmatched.map((a,i)=>`  ${i+1}. Login ID: ${a.login} (${a.plan})`).join('\n');
+    reply=`Thank you for reaching out to FundedNext Support.\n\nI have reviewed your account and identified the following Challenge account${unmatched.length>1?'s':''} that ${unmatched.length>1?'have':'has'} successfully reached the profit target but ${unmatched.length>1?'have':'has'} not yet been converted to a FundedNext account:\n\n${loginList}\n\nI will create a ticket for you with our relevant team to ensure your FundedNext account${unmatched.length>1?'s are':' is'} set up as soon as possible. Please allow me some time to process this.\n\nI apologise for any inconvenience and appreciate your patience.\n\nBest regards,\nFundedNext Support Team`;
+  }
+  document.getElementById('reply-text').textContent=reply.trim();
+}
+function toggleReply(){
+  replyVisible=!replyVisible;
+  document.getElementById('reply-section').style.display=replyVisible?'block':'none';
+  const btn=document.getElementById('btn-reply');
+  btn.textContent=replyVisible?'✕ Hide Reply':'✉ Client Reply';
+  btn.classList.toggle('active',replyVisible);
+}
+function copyReply(){
+  const text=document.getElementById('reply-text').textContent,btn=document.getElementById('btn-copy-reply');
+  const fb=()=>{btn.textContent='✓ Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy Reply';btn.classList.remove('copied');},2000);};
+  navigator.clipboard.writeText(text).then(fb).catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);fb();});
+}
+function copyTable(){
+  if(!lastResults.length)return;
+  const lines=['Login (Account #)\tType\tPlan\tBalance\tEquity\tPnL',...lastResults.map(a=>`${a.login}\t${a.accountType}\t${a.plan}\t${a.balance}\t${a.equity}\t${a.pnl}`)];
+  const text=lines.join('\n'),btn=document.getElementById('btn-copy');
+  const fb=()=>{btn.textContent='✓ Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy Table';btn.classList.remove('copied');},2000);};
+  navigator.clipboard.writeText(text).then(fb).catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);fb();});
+}
+function toggleExcluded(){
+  const list=document.getElementById('excluded-list'),btn=document.getElementById('excluded-toggle');
+  const vis=list.classList.toggle('visible');
+  const total=lastExcluded.length+lastAllChallenge.filter(a=>a.breachedby===null).length;
+  btn.textContent=vis?`▼ Hide excluded accounts — ${total} shown`:`▶ Show excluded accounts — ${total} not shown`;
+}
+function showError(msg){const b=document.getElementById('error-banner');b.textContent='⚠ '+msg;b.classList.add('visible');}
+function clearAll(){
+  document.getElementById('paste-all').value='';
+  ['count-challenge','count-funded','count-total'].forEach((id,i)=>{const el=document.getElementById(id);el.textContent=['Demo: —','Real: —','Total: —'][i];el.className='paste-count';});
+  document.getElementById('zone-all').classList.remove('has-data','zone-warn');
+  ['warn-pagination','error-banner'].forEach(id=>document.getElementById(id).classList.remove('visible'));
+  document.getElementById('results-section').classList.remove('visible');
+  document.getElementById('parse-status').textContent='';
+  document.getElementById('reply-section').style.display='none';
+  replyVisible=false;lastResults=[];lastExcluded=[];lastAllChallenge=[];
+}
+
+// BREACH MESSAGE TOOL
+const BT_RULES = {
+  bolt:   { sizes: ['50000'], mll: {'50000': 2000}, dll: {'50000': 1000}, mllType: 'trailing-intraday' },
+  rapid:  { sizes: ['25000','50000','100000'], mll: {'25000':1000,'50000':2000,'100000':2500}, dll: null, mllType: 'trailing-eod' },
+  legacy: { sizes: ['25000','50000','100000'], mll: {'25000':1000,'50000':2000,'100000':3000}, dll: null, mllType: 'trailing-eod' }
+};
+const SIZE_LABELS = {'25000':'$25,000','50000':'$50,000','100000':'$100,000'};
+let btBreachType = 'mll';
+
+function btUpdateUI() {
+  const typeSelect = document.getElementById('bt-account-type');
+  const sizeSelect = document.getElementById('bt-account-size');
+  const type = typeSelect.value;
+  sizeSelect.innerHTML = '<option value="">— Select Size —</option>';
+  if (!type) return;
+  const rules = BT_RULES[type];
+  if (rules && rules.sizes) {
+    rules.sizes.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s; opt.textContent = SIZE_LABELS[s] || s;
+      sizeSelect.appendChild(opt);
+    });
+    if (rules.sizes.length === 1) sizeSelect.value = rules.sizes[0];
+  }
+  const breachTabs = document.querySelectorAll('.bt-breach-tab');
+  if (breachTabs.length >= 2) {
+    const dllTab = breachTabs[1];
+    dllTab.style.display = type === 'bolt' ? '' : 'none';
+    if (btBreachType === 'dll' && type !== 'bolt') btSelectBreach('mll', breachTabs[0]);
+  }
+  btUpdateRule();
+}
+
+function btSelectBreach(type, btn) {
+  btBreachType = type;
+  document.querySelectorAll('.bt-breach-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('bt-mll-inputs').classList.toggle('visible', type === 'mll');
+  document.getElementById('bt-dll-inputs').classList.toggle('visible', type === 'dll');
+  document.getElementById('bt-inactivity-inputs').classList.toggle('visible', type === 'inactivity');
+  btUpdateRule();
+}
+
+function btUpdateRule() {
+  const type = document.getElementById('bt-account-type').value;
+  const size = document.getElementById('bt-account-size').value;
+  if (!type || !size) return;
+  const rules = BT_RULES[type];
+  const mll = rules.mll[size];
+  const mllRuleEl = document.getElementById('bt-mll-rule');
+  const isIntraday = rules.mllType === 'trailing-intraday';
+  if (mllRuleEl) {
+    const mllVal = mll ? mll.toLocaleString() : '0';
+    mllRuleEl.innerHTML = `<strong>MLL Rule for ${type.charAt(0).toUpperCase()+type.slice(1)} ${SIZE_LABELS[size]}:</strong> The Maximum Loss Limit is <strong>$${mllVal}</strong>. This is a <strong>${isIntraday ? 'trailing intraday' : 'trailing EOD (End of Day)'}</strong> limit — it moves up as the ${isIntraday ? 'highest intraday balance increases' : 'highest EOD balance increases'}. Once the threshold reaches the <strong>Initial Starting Balance</strong>, it locks and stops trailing.`;
+  }
+  const hintEl = document.getElementById('bt-high-bal-hint');
+  if (hintEl) hintEl.textContent = isIntraday ? 'Bolt: highest balance reached at any point during trading (intraday).' : 'Rapid/Legacy: highest balance at end of any trading day (EOD).';
+  if (type === 'bolt' && btBreachType === 'dll') {
+    const dll = rules.dll[size];
+    const dllRuleEl = document.getElementById('bt-dll-rule');
+    if (dllRuleEl) {
+      const dllVal = dll ? dll.toLocaleString() : '0';
+      dllRuleEl.innerHTML = `<strong>DLL Rule for Bolt ${SIZE_LABELS[size]}:</strong> The Daily Loss Limit is <strong>$${dllVal}</strong>. The account breaches if the balance drops <strong>$${dllVal} below the balance at the start of the trading day</strong>. This is calculated on an intraday basis.`;
+    }
+  }
+  btUpdateLive();
+}
+
+function btUpdateLive() {
+  const type = document.getElementById('bt-account-type').value;
+  const size = document.getElementById('bt-account-size').value;
+  if (!type || !size || btBreachType !== 'mll') return;
+  const rules = BT_RULES[type];
+  const mll = rules.mll[size] || 0;
+  const startBal = parseFloat(document.getElementById('bt-start-bal').value) || 0;
+  const highBal  = parseFloat(document.getElementById('bt-high-bal').value) || 0;
+  const currBal  = parseFloat(document.getElementById('bt-current-bal').value) || 0;
+  const liveEl = document.getElementById('bt-mll-live');
+  if (!startBal && !highBal && !currBal) { liveEl.textContent = 'Enter values above to see live calculation'; return; }
+  const threshold = Math.min(startBal, highBal - mll);
+  const breached = currBal < threshold;
+  const isLocked = threshold >= startBal;
+  liveEl.innerHTML = `
+    <div style="margin-bottom:6px"><span style="color:var(--text3)">MLL Amount:</span> <strong>$${mll.toLocaleString()}</strong></div>
+    <div style="margin-bottom:6px"><span style="color:var(--text3)">Highest Balance:</span> <strong>$${(highBal||startBal).toLocaleString()}</strong></div>
+    <div style="margin-bottom:6px"><span style="color:var(--text3)">Breach Threshold:</span> <strong style="color:var(--warn)">$${threshold.toLocaleString(undefined,{minimumFractionDigits:2})}</strong> ${isLocked ? '<span style="font-size:10px; color:var(--brand); font-weight:800; margin-left:4px;">LOCKED</span>' : ''}</div>
+    <div><span style="color:var(--text3)">Status:</span> <strong style="color:${breached?'var(--red)':'var(--green)'}">${breached?'⚠ BREACHED':'✅ Within Limit'}</strong></div>`;
+}
+
+function btGenerate() {
+  document.getElementById('bt-error-banner').classList.remove('visible');
+  const type = document.getElementById('bt-account-type').value;
+  const size = document.getElementById('bt-account-size').value;
+  if (!type) { btShowError('Please select an account type.'); return; }
+  if (!size) { btShowError('Please select an account size.'); return; }
+  const rules = BT_RULES[type];
+  const typeName = type.charAt(0).toUpperCase()+type.slice(1);
+  const sizeLabel = SIZE_LABELS[size];
+
+  let reply = '';
+  let rows = [];
+
+  if (btBreachType === 'mll') {
+    const startBal = parseFloat(document.getElementById('bt-start-bal').value);
+    const highBal  = parseFloat(document.getElementById('bt-high-bal').value);
+    const currBal  = parseFloat(document.getElementById('bt-current-bal').value);
+    if (isNaN(startBal) || isNaN(highBal) || isNaN(currBal)) { btShowError('Please enter all balance values.'); return; }
+    const mll = rules.mll[size] || 0;
+    const isIntraday = rules.mllType === 'trailing-intraday';
+    const threshold = Math.min(startBal, highBal - mll);
+    const breached = currBal < threshold;
+    const isLocked = threshold >= startBal;
+    
+    rows = [
+      {label:'Account Type', value:`${typeName} Challenge`, cls:''},
+      {label:'Starting Balance', value:`$${startBal.toLocaleString(undefined,{minimumFractionDigits:2})}`, cls:''},
+      {label:`Highest ${isIntraday?'Intraday':'EOD'} Balance`, value:`$${highBal.toLocaleString(undefined,{minimumFractionDigits:2})}`, cls:'highlight-row'},
+      {label:'MLL Amount', value:`$${mll.toLocaleString()}`, cls:''},
+      {label:'Breach Threshold', value:`$${threshold.toLocaleString(undefined,{minimumFractionDigits:2})}${isLocked?' (LOCKED)':''}`, cls:'highlight-row'},
+      {label:'Current Balance', value:`$${currBal.toLocaleString(undefined,{minimumFractionDigits:2})}`, cls: breached ? 'breach-row' : 'compliant-row'},
+      {label:'Result', value: breached ? '⚠ MLL BREACHED' : '✅ ACCOUNT COMPLIANT', cls: breached ? 'breach-row' : 'compliant-row'},
+    ];
+
+    if (breached) {
+      reply = `Thank you for reaching out to FundedNext Support.\n\nI have reviewed your ${typeName} Challenge account (${sizeLabel}) and would like to explain why it has been breached.\n\nYour account has been breached due to the Maximum Loss Limit (MLL) being exceeded. Here is a detailed breakdown:\n\n  • Starting Balance: $${startBal.toLocaleString(undefined,{minimumFractionDigits:2})}\n  • Highest ${isIntraday?'Intraday':'EOD'} Balance Reached: $${highBal.toLocaleString(undefined,{minimumFractionDigits:2})}\n  • MLL Amount: $${mll.toLocaleString()}\n  • Breach Threshold: $${threshold.toLocaleString(undefined,{minimumFractionDigits:2})} ${isLocked ? '(Locked at Initial Balance)' : ''}\n  • Balance at Time of Breach: $${currBal.toLocaleString(undefined,{minimumFractionDigits:2})}\n\n${isLocked ? 'Once your account reached a sufficient profit level, the MLL threshold locked at your initial starting balance. This means it no longer trails higher, effectively becoming a static floor.' : 'The MLL threshold trails your highest balance reached until it reaches your initial starting balance.'} Because your balance dropped below the breach threshold, the MLL rule was triggered.\n\nBest regards,\nFundedNext Support Team`;
+    } else {
+      reply = `Thank you for reaching out to FundedNext Support.\n\nI have reviewed your ${typeName} Challenge account (${sizeLabel}) and I am happy to confirm that your account is currently in good standing.\n\nBased on your highest balance reached ($${highBal.toLocaleString(undefined,{minimumFractionDigits:2})}), your breach threshold is set at $${threshold.toLocaleString(undefined,{minimumFractionDigits:2})}. Your current balance of $${currBal.toLocaleString(undefined,{minimumFractionDigits:2})} is safely above this limit.\n\nKeep up the great work, and if you have any other questions, feel free to ask!\n\nBest regards,\nFundedNext Support Team`;
+    }
+
+  } else if (btBreachType === 'dll') {
+    const openBal = parseFloat(document.getElementById('bt-dll-open').value);
+    const lowBal  = parseFloat(document.getElementById('bt-dll-low').value);
+    if (isNaN(openBal) || isNaN(lowBal)) { btShowError('Please enter both Daily Start and Low values.'); return; }
+    const dll = rules.dll[size] || 0;
+    const threshold = openBal - dll;
+    const breached = lowBal < threshold;
+    rows = [
+      {label:'Account Type', value:`Bolt Challenge`, cls:''},
+      {label:'Balance at Start of Day', value:`$${openBal.toLocaleString(undefined,{minimumFractionDigits:2})}`, cls:''},
+      {label:'Daily Loss Limit', value:`$${dll.toLocaleString()}`, cls:''},
+      {label:'Breach Threshold', value:`$${threshold.toLocaleString(undefined,{minimumFractionDigits:2})}`, cls:'highlight-row'},
+      {label:'Lowest Point Reached', value:`$${lowBal.toLocaleString(undefined,{minimumFractionDigits:2})}`, cls: breached ? 'breach-row' : 'compliant-row'},
+      {label:'Result', value: breached ? '⚠ DLL BREACHED' : '✅ ACCOUNT COMPLIANT', cls: breached ? 'breach-row' : 'compliant-row'},
+    ];
+    if (breached) {
+      reply = `Thank you for reaching out to FundedNext Support.\n\nI have reviewed your Bolt Challenge account and found it was breached due to the Daily Loss Limit (DLL). Your balance at the start of the day was $${openBal.toLocaleString(undefined,{minimumFractionDigits:2})}, giving you a breach floor of $${threshold.toLocaleString(undefined,{minimumFractionDigits:2})}. During intraday trading, your balance reached $${lowBal.toLocaleString(undefined,{minimumFractionDigits:2})}, which triggered the DLL rule.\n\nBest regards,\nFundedNext Support Team`;
+    } else {
+      reply = `Thank you for reaching out to FundedNext Support.\n\nI have reviewed your Bolt Challenge account. Your balance at the start of the day was $${openBal.toLocaleString(undefined,{minimumFractionDigits:2})}, meaning your Daily Loss Limit threshold is $${threshold.toLocaleString(undefined,{minimumFractionDigits:2})}. Since your lowest balance today ($${lowBal.toLocaleString(undefined,{minimumFractionDigits:2})}) remained above this threshold, your account is fully compliant.\n\nBest regards,\nFundedNext Support Team`;
+    }
+
+  } else if (btBreachType === 'inactivity') {
+    const lastTrade = document.getElementById('bt-last-trade').value;
+    const reviewDate = document.getElementById('bt-breach-date').value;
+    if (!lastTrade || !reviewDate) { btShowError('Please enter both dates.'); return; }
+    const lastD = new Date(lastTrade), revD = new Date(reviewDate);
+    const diffDays = Math.round((revD - lastD) / (1000*60*60*24));
+    const fmt = d => new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+    const breached = diffDays >= 30;
+    rows = [
+      {label:'Last Trading Date', value:fmt(lastTrade), cls:''},
+      {label:'Days Without Trading', value:`${diffDays} days`, cls: breached ? 'breach-row' : 'compliant-row'},
+      {label:'Inactivity Limit', value:'30 calendar days', cls:''},
+      {label:'Result', value: breached ? '⚠ INACTIVITY BREACH' : '✅ ACCOUNT COMPLIANT', cls: breached ? 'breach-row' : 'compliant-row'},
+    ];
+    if (breached) {
+      reply = `Thank you for reaching out to FundedNext Support.\n\nI have reviewed your account and found it was breached due to the Inactivity rule. The FundedNext ${typeName} Challenge requires at least one trading day every 30 calendar days. Since no trades were placed between ${fmt(lastTrade)} and ${fmt(reviewDate)} (a period of ${diffDays} days), the account was automatically breached.\n\nBest regards,\nFundedNext Support Team`;
+    } else {
+      reply = `Thank you for reaching out to FundedNext Support.\n\nI have reviewed your account. It has been ${diffDays} days since your last trade on ${fmt(lastTrade)}. As you are within the 30-day requirement, your account remains active and compliant.\n\nBest regards,\nFundedNext Support Team`;
+    }
+  }
+
+  document.getElementById('bt-breakdown-body').innerHTML = rows.map(r=>`<div class="bt-row ${r.cls}"><span class="bt-row-label">${r.label}</span><span class="bt-row-value">${r.value}</span></div>`).join('');
+  document.getElementById('bt-reply-text').textContent = reply.trim();
+  document.getElementById('bt-result').classList.add('visible');
+  document.getElementById('bt-result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function btCopyReply() {
+  const text = document.getElementById('bt-reply-text').textContent;
+  const btn = document.getElementById('bt-copy-reply-btn');
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='✓ Copied!'; btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy Reply';btn.classList.remove('copied');},2000);
+  });
+}
+function btShowError(msg) {
+  const b=document.getElementById('bt-error-banner');
+  b.textContent='⚠ '+msg; b.classList.add('visible');
+}
+function btClear() {
+  ['bt-start-bal','bt-high-bal','bt-current-bal','bt-dll-open','bt-dll-low','bt-last-trade','bt-breach-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('bt-result').classList.remove('visible');
+  document.getElementById('bt-error-banner').classList.remove('visible');
+  document.getElementById('bt-mll-live').textContent = 'Enter values above to see live calculation';
+}
+</script>
+</body>
+</html>
