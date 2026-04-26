@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -34,7 +34,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.5; min-height: 100vh; }
 
-  /* TOPBAR REFINEMENT */
+  /* TOPBAR - Refined Professional Layout */
   .topbar { 
     background: var(--white); 
     border-bottom: 1px solid var(--border); 
@@ -48,40 +48,74 @@
     top: 0;
     z-index: 100;
   }
-  .topbar-brand { display: flex; align-items: center; gap: 14px; }
+  .topbar-left { display: flex; align-items: center; gap: 14px; }
   .topbar-logo { 
     width: 38px; 
     height: 38px; 
     background: var(--gradient); 
-    border-radius: 12px; 
+    border-radius: 10px; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
     font-weight: 800; 
     font-size: 16px; 
     color: white; 
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
   }
-  .topbar-name { font-weight: 800; font-size: 18px; color: var(--navy); letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }
-  .topbar-version { font-size: 10px; font-weight: 600; color: var(--text3); background: var(--bg); padding: 2px 6px; border-radius: 6px; text-transform: uppercase; }
-  .topbar-tool { font-size: 14px; font-weight: 500; color: var(--text2); opacity: 0.8; }
-  .topbar-meta { display: flex; align-items: center; gap: 20px; }
+  .topbar-name { font-weight: 800; font-size: 18px; color: var(--navy); letter-spacing: -0.02em; }
+  .topbar-version { font-size: 11px; font-weight: 600; color: var(--text3); margin-left: 4px; }
+  
+  .topbar-center { 
+    font-size: 14px; 
+    font-weight: 600; 
+    color: var(--text2); 
+    text-transform: uppercase; 
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  .topbar-right { display: flex; align-items: center; }
   .topbar-badge { 
     font-size: 11px; 
     font-weight: 700; 
     color: var(--brand); 
     background: var(--brand-light); 
-    border: 1px solid var(--brand-light); 
+    border: 1px solid rgba(79, 70, 229, 0.1); 
     border-radius: 30px; 
-    padding: 6px 14px; 
+    padding: 6px 16px; 
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
-  /* MAIN TABS */
-  .main-tabs { display: flex; background: var(--white); border-bottom: 2px solid var(--border); padding: 0 32px; gap: 4px; overflow-x: auto; scrollbar-width: none; }
-  .main-tab { padding: 18px 20px; color: var(--text2); cursor: pointer; border-bottom: 3px solid transparent; font-size: 13px; font-weight: 600; transition: all 0.2s; white-space: nowrap; margin-bottom: -2px; }
-  .main-tab:hover { color: var(--brand); }
+  /* MAIN TABS - Fixed with Central Container */
+  .main-tabs { 
+    background: var(--white); 
+    border-bottom: 2px solid var(--border); 
+    position: sticky;
+    top: 72px;
+    z-index: 99;
+  }
+  .tabs-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    padding: 0 24px;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .main-tab { 
+    padding: 18px 24px; 
+    color: var(--text2); 
+    cursor: pointer; 
+    border-bottom: 3px solid transparent; 
+    font-size: 13px; 
+    font-weight: 600; 
+    transition: all 0.2s; 
+    white-space: nowrap; 
+    margin-bottom: -2px; 
+  }
+  .main-tab:hover { color: var(--brand); background: rgba(79, 70, 229, 0.02); }
   .main-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
 
   /* PAGE LAYOUT */
@@ -121,7 +155,13 @@
   .paste-header { padding: 12px 16px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 900; color: var(--navy); text-transform: uppercase; }
   .am-textarea { width: 100%; min-height: 260px; border: none; outline: none; background: transparent; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; padding: 16px; color: var(--text2); resize: vertical; }
 
-  /* RESULTS & CARDS */
+  /* BREACH TOOL & PNL RESULTS */
+  .bt-inputs { display: none; }
+  .bt-inputs.visible { display: block; }
+  .bt-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  @media (max-width: 750px) { .bt-stat-grid { grid-template-columns: 1fr; } }
+  .bt-card { background: var(--white); border: 1.5px solid var(--border); padding: 20px; border-radius: var(--radius); transition: all 0.2s; box-shadow: var(--shadow); }
+  
   .calc-container { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
   @media (max-width: 850px) { .calc-container { grid-template-columns: 1fr; } }
   .premium-result { background: var(--navy); color: white; border-radius: var(--radius); padding: 40px 30px; text-align: center; box-shadow: var(--shadow-md); position: relative; }
@@ -143,8 +183,6 @@
   .cc-del { color: #fca5a5; cursor: pointer; padding: 6px 10px; font-size: 18px; transition: color 0.2s; border: none; background: none; }
   .cc-del:hover { color: var(--red); }
   
-  .bt-inputs { display: none; }
-  .bt-inputs.visible { display: block; }
   .bt-breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-radius: 8px; background: #fff; border: 1.5px solid var(--border); font-size: 13.5px; margin-bottom: 8px; }
   .bt-breakdown-row span:last-child { font-weight: 750; font-family: 'Courier New', monospace; }
   .br-violation { background: var(--red-light); color: #991b1b; border-color: #fca5a5; }
@@ -154,22 +192,24 @@
 <body>
 
 <div class="topbar">
-  <div class="topbar-brand">
+  <div class="topbar-left">
     <div class="topbar-logo">FN</div>
     <div class="topbar-name">FundedNext <span class="topbar-version">v4.0</span></div>
   </div>
-  <div class="topbar-tool">Internal Support Terminal</div>
-  <div class="topbar-meta">
+  <div class="topbar-center">Internal Support Terminal</div>
+  <div class="topbar-right">
     <div class="topbar-badge">Admin Level Access</div>
   </div>
 </div>
 
 <div class="main-tabs">
-  <div class="main-tab active" onclick="switchMainTab('consistency')">📊 Consistency Calculator</div>
-  <div class="main-tab"        onclick="switchMainTab('matcher')">🔍 Account Matcher</div>
-  <div class="main-tab"        onclick="switchMainTab('breach')">⚠️ Breach Message Tool</div>
-  <div class="main-tab"        onclick="switchMainTab('commission')">💸 Commission Calc</div>
-  <div class="main-tab"        onclick="switchMainTab('pnl')">📈 P&L Calculator</div>
+  <div class="tabs-container">
+    <div class="main-tab active" onclick="switchMainTab('consistency')">📊 Consistency Calculator</div>
+    <div class="main-tab"        onclick="switchMainTab('matcher')">🔍 Account Matcher</div>
+    <div class="main-tab"        onclick="switchMainTab('breach')">⚠️ Breach Message Tool</div>
+    <div class="main-tab"        onclick="switchMainTab('commission')">💸 Commission Calc</div>
+    <div class="main-tab"        onclick="switchMainTab('pnl')">📈 P&L Calculator</div>
+  </div>
 </div>
 
 <div class="page-container">
@@ -207,7 +247,9 @@
             </div>
         </div>
         <div class="section-card" id="l-reply-card" style="display:none; margin-top:24px;">
-            <div class="reply-header"><strong>Professional Support Draft</strong><button class="btn-copy-premium" onclick="copyById('l-msg', this)">Copy Message</button></div>
+            <div class="reply-header" style="justify-content: flex-end;">
+              <button class="btn-copy-premium" onclick="copyById('l-msg', this)">Copy Message</button>
+            </div>
             <div id="l-msg" class="reply-area"></div>
         </div>
     </div>
@@ -242,7 +284,9 @@
             </div>
         </div>
         <div class="section-card" id="r-reply-card" style="display:none; margin-top:24px;">
-            <div class="reply-header"><strong>Professional Support Draft</strong><button class="btn-copy-premium" onclick="copyById('r-msg', this)">Copy Message</button></div>
+            <div class="reply-header" style="justify-content: flex-end;">
+              <button class="btn-copy-premium" onclick="copyById('r-msg', this)">Copy Message</button>
+            </div>
             <div id="r-msg" class="reply-area"></div>
         </div>
     </div>
@@ -252,7 +296,8 @@
   <div id="tool-matcher" class="tool-section">
     <div class="step-label">Step 01 — Data Collection from API Table</div>
     <div class="tip">
-      <strong>Instruction:</strong> Open the account list in the **API Table**. Click anywhere on the table, then press <code>Ctrl + Shift + End</code> to select all records. Copy (<code>Ctrl+C</code>) and paste into the respective boxes below.</div>
+      <strong>Instruction:</strong> Open the account list in the **API Table**. Click anywhere on the table, then press <code>Ctrl + Shift + End</code> to select all records. Copy (<code>Ctrl+C</code>) and paste into the respective boxes below.
+    </div>
 
     <div class="matcher-grid">
       <div class="paste-zone">
@@ -273,7 +318,9 @@
             <div id="matcher-list" style="padding:24px; background:var(--white); font-family:monospace; font-size:14px; font-weight:700; color:var(--brand); line-height: 1.6;"></div>
         </div>
         <div class="section-card">
-            <div class="reply-header"><strong>Internal Ticket Draft</strong><button class="btn-copy-premium" onclick="copyById('matcher-text', this)">Copy Draft</button></div>
+            <div class="reply-header" style="justify-content: flex-end;">
+              <button class="btn-copy-premium" onclick="copyById('matcher-text', this)">Copy Draft</button>
+            </div>
             <div class="reply-area" id="matcher-text"></div>
         </div>
     </div>
@@ -296,6 +343,7 @@
     </div>
 
     <div id="bt-inputs-zone">
+      <!-- MLL -->
       <div id="bt-mll-inputs" class="bt-inputs visible">
           <div class="bt-rule-box" id="bt-mll-rule" style="margin-bottom:24px; padding: 15px; background: var(--brand-light); border-radius: 8px; color: var(--brand-dark); font-size: 13px;">Please select account phase to see specific rules.</div>
           <div class="bt-stat-grid">
@@ -304,6 +352,7 @@
             <div class="bt-card"><div class="input-group"><label>Current Balance</label><input type="number" id="bt-curr" placeholder="47500" oninput="btLive()"></div></div>
           </div>
       </div>
+      <!-- DLL -->
       <div id="bt-dll-inputs" class="bt-inputs">
           <div class="tip">Daily Loss Limit logic calculates breaches based on the drawdown from the starting balance of the day.</div>
           <div class="bt-stat-grid" style="grid-template-columns: 1fr 1fr;">
@@ -311,6 +360,7 @@
               <div class="bt-card"><div class="input-group"><label>Daily Lowest Balance</label><input type="number" id="bt-dll-low"></div></div>
           </div>
       </div>
+      <!-- Inactivity -->
       <div id="bt-inactivity-inputs" class="bt-inputs">
           <div class="tip">Challenge accounts breach after 7 consecutive calendar days. Funded accounts deactivate after 30 days.</div>
           <div class="bt-stat-grid" style="grid-template-columns: 1fr 1fr;">
@@ -326,10 +376,12 @@
     <div id="bt-result-area" style="display:none; margin-top:24px;">
       <div class="section-card">
         <div class="section-card-header"><span class="step-label" style="margin-bottom:0">Final Account Stats Audit</span></div>
-        <div id="bt-breakdown-body" style="padding: 16px; display: flex; flex-direction: column; gap: 10px;"></div>
+        <div id="bt-breakdown-body" style="padding: 20px; display: flex; flex-direction: column; gap: 10px;"></div>
       </div>
       <div class="section-card">
-        <div class="reply-header"><strong>✉ Support Response</strong><button class="btn-copy-premium" onclick="copyById('bt-text', this)">Copy Message</button></div>
+        <div class="reply-header" style="justify-content: flex-end;">
+          <button class="btn-copy-premium" onclick="copyById('bt-text', this)">Copy Message</button>
+        </div>
         <div class="reply-area" id="bt-text"></div>
       </div>
     </div>
@@ -350,7 +402,9 @@
         </div>
     </div>
     <div class="section-card" style="margin-top:24px;">
-        <div class="reply-header"><strong>Detailed Explanation</strong><button class="btn-copy-premium" onclick="copyById('cm-reply', this)">Copy Message</button></div>
+        <div class="reply-header" style="justify-content: flex-end;">
+          <button class="btn-copy-premium" onclick="copyById('cm-reply', this)">Copy Message</button>
+        </div>
         <div id="cm-reply" class="reply-area"></div>
     </div>
   </div>
@@ -381,7 +435,9 @@
         </div>
     </div>
     <div class="section-card" style="margin-top:24px;">
-        <div class="reply-header"><strong>Detailed Explanation</strong><button class="btn-copy-premium" onclick="copyById('pnl-reply', this)">Copy Message</button></div>
+        <div class="reply-header" style="justify-content: flex-end;">
+          <button class="btn-copy-premium" onclick="copyById('pnl-reply', this)">Copy Message</button>
+        </div>
         <div id="pnl-reply" class="reply-area"></div>
     </div>
   </div>
@@ -391,42 +447,43 @@
 <script>
 // INSTRUMENT DATA (NINJATRADER PDF + Product List)
 const FEEDS = [
-    { code: 'EMD', name: 'E-mini Midcap 400', tick: 0.1, val: 10.00, cost: 2.83 },
+    { code: '6A', name: 'Australian Dollar', tick: 0.0001, val: 10.00, cost: 3.10 },
+    { code: 'M6A', name: 'Micro AUD/USD', tick: 0.0001, val: 1.00, cost: 0.84 },
+    { code: '6B', name: 'British Pound', tick: 0.0001, val: 6.25, cost: 3.10 },
+    { code: '6C', name: 'Canadian Dollar', tick: 0.0001, val: 10.00, cost: 3.10 },
+    { code: '6E', name: 'Euro FX', tick: 0.00005, val: 6.25, cost: 3.10 },
+    { code: 'M6E', name: 'Micro Euro', tick: 0.0001, val: 1.25, cost: 0.84 },
+    { code: '6J', name: 'Japanese Yen', tick: 0.0000005, val: 6.25, cost: 3.10 },
+    { code: '6N', name: 'New Zealand Dollar', tick: 0.0001, val: 10.00, cost: 3.10 },
+    { code: '6S', name: 'Swiss Franc', tick: 0.0001, val: 12.50, cost: 3.10 },
+    { code: 'NQ', name: 'E-mini NASDAQ 100', tick: 0.25, val: 5.00, cost: 2.88 },
+    { code: 'MNQ', name: 'Micro NASDAQ-100', tick: 0.25, val: 0.50, cost: 0.95 },
     { code: 'ES', name: 'E-mini S&P 500', tick: 0.25, val: 12.50, cost: 2.88 },
-    { code: 'MES', name: 'Micro S&P 500', tick: 0.25, val: 1.25, cost: 0.95 },
-    { code: 'NQ', name: 'E-mini Nasdaq 100', tick: 0.25, val: 5.00, cost: 2.88 },
-    { code: 'MNQ', name: 'Micro Nasdaq 100', tick: 0.25, val: 0.50, cost: 0.95 },
+    { code: 'MES', name: 'Micro E-mini S&P 500', tick: 0.25, val: 1.25, cost: 0.95 },
     { code: 'RTY', name: 'E-mini Russell 2000', tick: 0.1, val: 5.00, cost: 2.88 },
     { code: 'M2K', name: 'Micro Russell 2000', tick: 0.1, val: 1.00, cost: 0.95 },
     { code: 'YM', name: 'E-mini Dow Jones', tick: 1.0, val: 5.00, cost: 2.88 },
     { code: 'MYM', name: 'Micro Dow Jones', tick: 1.0, val: 0.50, cost: 0.95 },
-    { code: '6A', name: 'Australian Dollar', tick: 0.0001, val: 10.00, cost: 3.10 },
-    { code: '6B', name: 'British Pound', tick: 0.0001, val: 6.25, cost: 3.10 },
-    { code: '6C', name: 'Canadian Dollar', tick: 0.0001, val: 10.00, cost: 3.10 },
-    { code: '6E', name: 'Euro FX', tick: 0.00005, val: 6.25, cost: 3.10 },
-    { code: '6J', name: 'Japanese Yen', tick: 0.0000005, val: 6.25, cost: 3.10 },
-    { code: '6N', name: 'New Zealand Dollar', tick: 0.0001, val: 10.00, cost: 3.10 },
-    { code: '6S', name: 'Swiss Franc', tick: 0.0001, val: 12.50, cost: 3.10 },
-    { code: 'M6A', name: 'Micro AUD/USD', tick: 0.0001, val: 1.00, cost: 0.84 },
-    { code: 'M6E', name: 'Micro Euro FX', tick: 0.0001, val: 1.25, cost: 0.84 },
     { code: 'GC', name: 'Gold', tick: 0.1, val: 10.00, cost: 3.10 },
     { code: 'MGC', name: 'Micro Gold', tick: 0.1, val: 1.00, cost: 1.20 },
+    { code: 'HG', name: 'Copper', tick: 0.0005, val: 12.50, cost: 3.10 },
+    { code: 'MHG', name: 'Micro Copper', tick: 0.001, val: 2.50, cost: 1.20 },
     { code: 'SI', name: 'Silver', tick: 0.005, val: 25.00, cost: 3.10 },
     { code: 'SIL', name: 'Micro Silver', tick: 0.001, val: 5.00, cost: 1.20 },
-    { code: 'HG', name: 'Copper Futures', tick: 0.0005, val: 12.50, cost: 3.10 },
-    { code: 'MHG', name: 'Micro Copper', tick: 0.001, val: 2.50, cost: 1.20 },
     { code: 'CL', name: 'Crude Oil', tick: 0.01, val: 10.00, cost: 3.00 },
     { code: 'QM', name: 'E-mini Crude Oil', tick: 0.025, val: 12.50, cost: 2.70 },
     { code: 'MCL', name: 'Micro Crude Oil', tick: 0.01, val: 1.00, cost: 1.10 },
     { code: 'NG', name: 'Natural Gas', tick: 0.001, val: 10.00, cost: 3.10 },
     { code: 'QG', name: 'E-mini Natural Gas', tick: 0.005, val: 12.50, cost: 2.00 },
     { code: 'RB', name: 'RBOB Gasoline', tick: 0.0001, val: 4.20, cost: 3.00 },
-    { code: 'HO', name: 'NY Harbor ULSD', tick: 0.0001, val: 4.20, cost: 3.00 },
     { code: 'HE', name: 'Lean Hogs', tick: 0.00025, val: 10.00, cost: 3.60 },
     { code: 'LE', name: 'Live Cattle', tick: 0.00025, val: 10.00, cost: 3.60 },
     { code: 'ZC', name: 'Corn', tick: 0.25, val: 12.50, cost: 3.60 },
     { code: 'ZS', name: 'Soybean', tick: 0.25, val: 12.50, cost: 3.60 },
-    { code: 'ZW', name: 'Wheat', tick: 0.25, val: 12.50, cost: 3.60 }
+    { code: 'ZM', name: 'Soybean Meal', tick: 0.01, val: 10.00, cost: 3.60 },
+    { code: 'ZL', name: 'Soybean Oil', tick: 0.0001, val: 6.00, cost: 3.60 },
+    { code: 'ZW', name: 'Wheat', tick: 0.25, val: 12.50, cost: 3.60 },
+    { code: 'EMD', name: 'E-mini Midcap 400', tick: 0.1, val: 10.00, cost: 2.83 }
 ];
 
 const BT_LIMITS = {
@@ -447,7 +504,7 @@ window.onload = () => {
     cmRun(); pnlRun();
 };
 
-// HELPERS
+// CORE HELPERS
 function copyById(id, btn) {
     const text = document.getElementById(id).innerText;
     const ta = document.createElement('textarea');
@@ -476,7 +533,7 @@ function switchMainTab(tab) {
 let currentCcMode = 'legacy';
 function setCcMode(m, btn) {
     currentCcMode = m;
-    document.querySelectorAll('.pill-tab').forEach(t => { if(t.parentElement.className.includes("tabs")) t.classList.remove('active'); });
+    document.querySelectorAll('.tool-section#tool-consistency .pill-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('cc-legacy-view').style.display = m === 'legacy' ? 'block' : 'none';
     document.getElementById('cc-rapid-view').style.display = m === 'rapid' ? 'block' : 'none';
@@ -677,7 +734,7 @@ function pnlRun() {
     const tks = diff / a.tick;
     const total = tks * a.val * q;
     
-    document.getElementById('pnl-val').innerText = '$' + total.toLocaleString(undefined, {minimumFractionDigits:2});
+    document.getElementById('pnl-val').innerText = '$' + total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     document.getElementById('pnl-pts').innerText = Math.abs(diff).toFixed(2);
     document.getElementById('pnl-tks').innerText = Math.abs(Math.round(tks));
     
@@ -685,7 +742,10 @@ function pnlRun() {
     pill.className = `badge-pnl ${total >= 0 ? 'profit' : 'loss'}`;
     pill.innerText = total >= 0 ? "Estimated Profit" : "Estimated Loss";
     
-    document.getElementById('pnl-reply').innerText = `Hello,\n\nI have reviewed your trade results for ${a.name} (${a.code}).\n\nTRADE DETAILS:\n• Position: ${pnlSide.toUpperCase()}\n• Entry Price: ${en.toFixed(2)}\n• Exit Price: ${ex.toFixed(2)}\n• Total Movement: ${Math.abs(Math.round(tks))} ticks\n• Tick Value: $${a.val.toFixed(2)}\n\nCALCULATION:\n(${Math.abs(Math.round(tks))} Ticks x $${a.val.toFixed(2)} Tick Value) x ${q} Contract(s) = $${total.toLocaleString()}\n\nThis calculation is based on the standard Futures formula: (Ticks Moved x Tick Value x Number of Contracts).\n\nBest regards,\nFundedNext Support Team`;
+    const pnlStatusText = total >= 0 ? "Profit" : "Loss";
+    const absTotal = Math.abs(total).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+    document.getElementById('pnl-reply').innerText = `Hello,\n\nI have reviewed your trade results for ${a.name} (${a.code}).\n\nTRADE DETAILS:\n• Position: ${pnlSide === 'buy' ? 'Long (Buy)' : 'Short (Sell)'}\n• Entry Price: ${en.toFixed(2)}\n• Exit Price: ${ex.toFixed(2)}\n• Points Moved: ${Math.abs(diff).toFixed(2)}\n• Ticks Moved: ${Math.abs(Math.round(tks))} ticks\n• Tick Value: $${a.val.toFixed(2)}\n• Contracts: ${q}\n\nCALCULATION:\n(${Math.abs(Math.round(tks))} Ticks × $${a.val.toFixed(2)} Tick Value) × ${q} Contract(s) = $${absTotal}\n\nFINAL RESULT: Total ${pnlStatusText} of $${absTotal}\n\nBest regards,\nFundedNext Support Team`;
 }
 </script>
 </body>
