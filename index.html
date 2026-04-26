@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -349,15 +349,15 @@
           <div class="bt-stat-grid">
             <div class="bt-card"><div class="input-group"><label>Starting Balance</label><input type="number" id="bt-start" placeholder="50000" oninput="btLive()"></div></div>
             <div class="bt-card"><div class="input-group"><label>Highest Balance</label><input type="number" id="bt-high" placeholder="52000" oninput="btLive()"></div></div>
-            <div class="bt-card"><div class="input-group"><label>Current Balance</label><input type="number" id="bt-curr" placeholder="47500" oninput="btLive()"></div></div>
+            <div class="bt-card"><div class="input-group"><label>Current at Review</label><input type="number" id="bt-curr" placeholder="47500" oninput="btLive()"></div></div>
           </div>
       </div>
-      <!-- DLL -->
+      <!-- DLL (Updated Trailing System) -->
       <div id="bt-dll-inputs" class="bt-inputs">
-          <div class="tip">Daily Loss Limit logic calculates breaches based on the drawdown from the starting balance of the day.</div>
+          <div class="tip">In Futures Trailing System, the Daily Loss Limit level is calculated from the highest End-of-Day (EOD) balance recorded.</div>
           <div class="bt-stat-grid" style="grid-template-columns: 1fr 1fr;">
-              <div class="bt-card"><div class="input-group"><label>Daily Start Balance</label><input type="number" id="bt-dll-start"></div></div>
-              <div class="bt-card"><div class="input-group"><label>Daily Lowest Balance</label><input type="number" id="bt-dll-low"></div></div>
+              <div class="bt-card"><div class="input-group"><label>Highest EOD Balance</label><input type="number" id="bt-dll-eod" placeholder="51500" oninput="btLive()"></div></div>
+              <div class="bt-card"><div class="input-group"><label>Current Equity at Review</label><input type="number" id="bt-dll-equity" placeholder="50200" oninput="btLive()"></div></div>
           </div>
       </div>
       <!-- Inactivity -->
@@ -487,10 +487,10 @@ const FEEDS = [
 ];
 
 const BT_LIMITS = {
-    bolt: { mll: { '50000': 2000 }, sizes: ['50000'] },
-    legacy: { mll: { '25000': 1000, '50000': 2000, '100000': 3000 }, sizes: ['25000','50000','100000'] },
-    rapid: { mll: { '25000': 1000, '50000': 2000, '100000': 2500 }, sizes: ['25000','50000','100000'] },
-    funded: { mll: null, sizes: ['25000','50000','100000'] }
+    bolt: { mll: { '50000': 2000 }, dll: { '50000': 1000 }, sizes: ['50000'] },
+    legacy: { mll: { '25000': 1000, '50000': 2000, '100000': 3000 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 }, sizes: ['25000','50000','100000'] },
+    rapid: { mll: { '25000': 1000, '50000': 2000, '100000': 2500 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 }, sizes: ['25000','50000','100000'] },
+    funded: { mll: null, dll: { '25000': 500, '50000': 1000, '100000': 2000 }, sizes: ['25000','50000','100000'] }
 };
 
 // INITIALIZATION
@@ -626,21 +626,34 @@ function btUpdate() {
 }
 
 function btLive() {
-    const s = parseFloat(document.getElementById('bt-start').value) || 0;
-    const h = parseFloat(document.getElementById('bt-high').value) || 0;
-    const c = parseFloat(document.getElementById('bt-curr').value) || 0;
-    const size = document.getElementById('bt-size').value;
     const type = document.getElementById('bt-type').value;
+    const size = document.getElementById('bt-size').value;
     
-    if(!s || activeBreachTab !== 'mll' || !type || !BT_LIMITS[type]) {
+    if(!type || !BT_LIMITS[type]) {
         document.getElementById('bt-live-status').innerText = "Waiting for values...";
         return;
     }
-    const mllAmt = (BT_LIMITS[type].mll && size) ? BT_LIMITS[type].mll[size] : 2000;
-    const floor = Math.min(s, h - mllAmt);
-    const br = c < floor;
-    document.getElementById('bt-live-status').innerHTML = `Breach Floor: $${floor.toLocaleString()} | Status: <span style="color:${br?'var(--red)':'var(--green)'}">${br?'BREACHED':'ACTIVE'}</span>`;
+
+    if (activeBreachTab === 'mll') {
+        const s = parseFloat(document.getElementById('bt-start').value) || 0;
+        const h = parseFloat(document.getElementById('bt-high').value) || 0;
+        const c = parseFloat(document.getElementById('bt-curr').value) || 0;
+        if(!s) return;
+        const mllAmt = (BT_LIMITS[type].mll && size) ? BT_LIMITS[type].mll[size] : 2000;
+        const floor = Math.min(s, h - mllAmt);
+        const br = c < floor;
+        document.getElementById('bt-live-status').innerHTML = `MLL Floor: $${floor.toLocaleString()} | Status: <span style="color:${br?'var(--red)':'var(--green)'}">${br?'BREACHED':'ACTIVE'}</span>`;
+    } else if (activeBreachTab === 'dll') {
+        const eod = parseFloat(document.getElementById('bt-dll-eod').value) || 0;
+        const equity = parseFloat(document.getElementById('bt-dll-equity').value) || 0;
+        if(!eod) return;
+        const dllAmt = (BT_LIMITS[type].dll && size) ? BT_LIMITS[type].dll[size] : 1000;
+        const floor = eod - dllAmt;
+        const br = equity <= floor;
+        document.getElementById('bt-live-status').innerHTML = `DLL Floor: $${floor.toLocaleString()} | Status: <span style="color:${br?'var(--red)':'var(--green)'}">${br?'SOFT BREACHED':'ACTIVE'}</span>`;
+    }
 }
+
 function btGenerate() {
     const type = document.getElementById('bt-type').value;
     const size = document.getElementById('bt-size').value;
@@ -669,19 +682,19 @@ function btGenerate() {
         msg = `Hello,\n\nI have reviewed your account status. Your trailing floor was established at ${fmt(floor)} (locked at initial balance). Since your current balance dropped to ${fmt(c)}, which is below this threshold, the account was automatically breached for exceeding the Maximum Loss Limit.\n\nBest regards,\nFundedNext Support Team`;
 
     } else if(activeBreachTab === 'dll') {
-        const dStart = parseFloat(document.getElementById('bt-dll-start').value);
-        const dLow = parseFloat(document.getElementById('bt-dll-low').value);
-        const dllAmt = (type === 'bolt') ? 1000 : 2000; 
-        const floor = dStart - dllAmt;
-        const isV = dLow < floor;
+        const eod = parseFloat(document.getElementById('bt-dll-eod').value);
+        const equity = parseFloat(document.getElementById('bt-dll-equity').value);
+        const dllAmt = (BT_LIMITS[type].dll && size) ? BT_LIMITS[type].dll[size] : 1000;
+        const floor = eod - dllAmt;
+        const isV = equity <= floor;
 
         breakdownHtml = `
-            <div class="bt-breakdown-row"><span>Daily Start Balance</span><span>${fmt(dStart)}</span></div>
-            <div class="bt-breakdown-row"><span>Daily Loss Limit</span><span>${fmt(dllAmt)}</span></div>
-            <div class="bt-breakdown-row"><span>Daily Breach Floor</span><span>${fmt(floor)}</span></div>
-            <div class="bt-breakdown-row ${isV?'br-violation':'br-compliant'}"><span>Daily Lowest Balance</span><span>${fmt(dLow)}</span></div>`;
+            <div class="bt-breakdown-row"><span>Previous Day Highest EOD Balance</span><span>${fmt(eod)}</span></div>
+            <div class="bt-breakdown-row"><span>Daily Loss Limit Amount</span><span>${fmt(dllAmt)}</span></div>
+            <div class="bt-breakdown-row"><span>Trailing DLL Breach Level</span><span>${fmt(floor)}</span></div>
+            <div class="bt-breakdown-row ${isV?'br-violation':'br-compliant'}"><span>Current Equity at Review</span><span>${fmt(equity)}</span></div>`;
 
-        msg = `Hello,\n\nUpon review, your account reached a daily low of ${fmt(dLow)} from a daily starting balance of ${fmt(dStart)}. This exceeded the permitted daily loss limit of ${fmt(dllAmt)}, leading to account deactivation.\n\nBest regards,\nFundedNext Support Team`;
+        msg = `Hello,\n\nI have reviewed your account details. In the Futures trailing system, the Daily Loss Limit is calculated from your highest End-of-Day (EOD) balance. \n\nYour highest EOD balance was ${fmt(eod)}, establishing a breach level of ${fmt(floor)} (${fmt(eod)} - ${fmt(dllAmt)}). Since your equity reached ${fmt(equity)}, your account has experienced a soft breach.\n\nBest regards,\nFundedNext Support Team`;
 
     } else {
         const last = document.getElementById('bt-last-date').value;
