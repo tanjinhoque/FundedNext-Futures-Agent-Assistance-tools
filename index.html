@@ -25,7 +25,7 @@
     --red: #ef4444;
     --red-light: #fee2e2;
     --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.08), 0 2px 6px -1px rgba(0,0,0,0.04);
     --radius: 12px;
     --font: 'Inter', -apple-system, sans-serif;
     --gradient: linear-gradient(135deg, #4f46e5, #312e81);
@@ -34,12 +34,49 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.5; min-height: 100vh; }
 
-  /* TOPBAR */
-  .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; align-items: center; height: 64px; gap: 12px; }
-  .topbar-logo { width: 34px; height: 34px; background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: white; }
-  .topbar-name { font-weight: 700; font-size: 16px; color: var(--navy); }
-  .topbar-tool { font-size: 13px; color: var(--text2); margin-left: 12px; padding-left: 12px; border-left: 1px solid var(--border); }
-  .topbar-badge { margin-left: auto; font-size: 11px; color: var(--text3); background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; }
+  /* TOPBAR REFINEMENT */
+  .topbar { 
+    background: var(--white); 
+    border-bottom: 1px solid var(--border); 
+    padding: 0 40px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    height: 72px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 14px; }
+  .topbar-logo { 
+    width: 38px; 
+    height: 38px; 
+    background: var(--gradient); 
+    border-radius: 12px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-weight: 800; 
+    font-size: 16px; 
+    color: white; 
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  }
+  .topbar-name { font-weight: 800; font-size: 18px; color: var(--navy); letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }
+  .topbar-version { font-size: 10px; font-weight: 600; color: var(--text3); background: var(--bg); padding: 2px 6px; border-radius: 6px; text-transform: uppercase; }
+  .topbar-tool { font-size: 14px; font-weight: 500; color: var(--text2); opacity: 0.8; }
+  .topbar-meta { display: flex; align-items: center; gap: 20px; }
+  .topbar-badge { 
+    font-size: 11px; 
+    font-weight: 700; 
+    color: var(--brand); 
+    background: var(--brand-light); 
+    border: 1px solid var(--brand-light); 
+    border-radius: 30px; 
+    padding: 6px 14px; 
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 
   /* MAIN TABS */
   .main-tabs { display: flex; background: var(--white); border-bottom: 2px solid var(--border); padding: 0 32px; gap: 4px; overflow-x: auto; scrollbar-width: none; }
@@ -55,8 +92,9 @@
   /* SHARED UI */
   .step-label { font-size: 11px; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
   .step-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .tip { background: var(--brand-light); border: 1px solid #c4b5fd; border-radius: var(--radius); padding: 14px 18px; font-size: 13px; color: var(--brand-dark); margin-bottom: 24px; line-height: 1.5; }
+  .tip { background: var(--brand-light); border: 1px solid #c4b5fd; border-radius: var(--radius); padding: 14px 18px; font-size: 13px; color: var(--brand-dark); margin-bottom: 24px; }
   
+  /* PREMIUM BUTTONS */
   .btn-primary { background: var(--brand); color: white; border: none; border-radius: 10px; padding: 14px 28px; font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow); border: 1px solid transparent; }
   .btn-primary:hover { background: var(--brand-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
   
@@ -64,12 +102,10 @@
   .btn-copy-premium:hover { opacity: 0.9; transform: scale(1.03); }
   .btn-copy-premium.success { background: var(--green) !important; }
 
-  /* PILL TABS */
   .pill-tabs { display: flex; gap: 6px; margin-bottom: 24px; background: #f1f1f1; padding: 5px; border-radius: 14px; width: fit-content; border: 1px solid var(--border); }
   .pill-tab { padding: 8px 24px; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--text2); background: transparent; transition: all 0.2s; }
   .pill-tab.active { background: var(--white); color: var(--brand); box-shadow: var(--shadow); }
 
-  /* FORMS & INPUTS */
   .section-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 24px; overflow: hidden; }
   .section-card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: #fafafa; }
   
@@ -85,12 +121,7 @@
   .paste-header { padding: 12px 16px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 900; color: var(--navy); text-transform: uppercase; }
   .am-textarea { width: 100%; min-height: 260px; border: none; outline: none; background: transparent; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; padding: 16px; color: var(--text2); resize: vertical; }
 
-  /* BREACH TOOL STAT GRID */
-  .bt-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-  @media (max-width: 750px) { .bt-stat-grid { grid-template-columns: 1fr; } }
-  .bt-card { background: var(--white); border: 1.5px solid var(--border); padding: 20px; border-radius: var(--radius); transition: all 0.2s; box-shadow: var(--shadow); }
-  
-  /* CALC RESULTS */
+  /* RESULTS & CARDS */
   .calc-container { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
   @media (max-width: 850px) { .calc-container { grid-template-columns: 1fr; } }
   .premium-result { background: var(--navy); color: white; border-radius: var(--radius); padding: 40px 30px; text-align: center; box-shadow: var(--shadow-md); position: relative; }
@@ -123,10 +154,14 @@
 <body>
 
 <div class="topbar">
-  <div class="topbar-logo">FN</div>
-  <div class="topbar-name">FundedNext</div>
-  <div class="topbar-tool">Admin Terminal v3.5</div>
-  <div class="topbar-badge">Authorized Agent Only</div>
+  <div class="topbar-brand">
+    <div class="topbar-logo">FN</div>
+    <div class="topbar-name">FundedNext <span class="topbar-version">v4.0</span></div>
+  </div>
+  <div class="topbar-tool">Internal Support Terminal</div>
+  <div class="topbar-meta">
+    <div class="topbar-badge">Admin Level Access</div>
+  </div>
 </div>
 
 <div class="main-tabs">
@@ -217,8 +252,7 @@
   <div id="tool-matcher" class="tool-section">
     <div class="step-label">Step 01 — Data Collection from API Table</div>
     <div class="tip">
-      <strong>Instruction:</strong> Go to the API Table for the client. Click anywhere on the table, then press <code>Ctrl + Shift + End</code> to select all records. Copy (<code>Ctrl+C</code>) and paste into the respective boxes below.
-    </div>
+      <strong>Instruction:</strong> Open the account list in the **API Table**. Click anywhere on the table, then press <code>Ctrl + Shift + End</code> to select all records. Copy (<code>Ctrl+C</code>) and paste into the respective boxes below.</div>
 
     <div class="matcher-grid">
       <div class="paste-zone">
@@ -262,7 +296,6 @@
     </div>
 
     <div id="bt-inputs-zone">
-      <!-- MLL -->
       <div id="bt-mll-inputs" class="bt-inputs visible">
           <div class="bt-rule-box" id="bt-mll-rule" style="margin-bottom:24px; padding: 15px; background: var(--brand-light); border-radius: 8px; color: var(--brand-dark); font-size: 13px;">Please select account phase to see specific rules.</div>
           <div class="bt-stat-grid">
@@ -271,7 +304,6 @@
             <div class="bt-card"><div class="input-group"><label>Current Balance</label><input type="number" id="bt-curr" placeholder="47500" oninput="btLive()"></div></div>
           </div>
       </div>
-      <!-- DLL -->
       <div id="bt-dll-inputs" class="bt-inputs">
           <div class="tip">Daily Loss Limit logic calculates breaches based on the drawdown from the starting balance of the day.</div>
           <div class="bt-stat-grid" style="grid-template-columns: 1fr 1fr;">
@@ -279,9 +311,8 @@
               <div class="bt-card"><div class="input-group"><label>Daily Lowest Balance</label><input type="number" id="bt-dll-low"></div></div>
           </div>
       </div>
-      <!-- Inactivity -->
       <div id="bt-inactivity-inputs" class="bt-inputs">
-          <div class="tip">Challenge accounts breach after 7 consecutive calendar days. Funded accounts deactivate after 30 days. Reset daily at 04:01 PM CT.</div>
+          <div class="tip">Challenge accounts breach after 7 consecutive calendar days. Funded accounts deactivate after 30 days.</div>
           <div class="bt-stat-grid" style="grid-template-columns: 1fr 1fr;">
               <div class="bt-card"><div class="input-group"><label>Last Trade Date</label><input type="date" id="bt-last-date"></div></div>
               <div class="bt-card"><div class="input-group"><label>Review Date</label><input type="date" id="bt-rev-date"></div></div>
@@ -306,7 +337,7 @@
 
   <!-- ================= COMMISSION CALCULATOR ================= -->
   <div id="tool-commission" class="tool-section">
-    <div class="step-label">All-in Rate Estimator</div>
+    <div class="step-label">NinjaTrader Fee Estimator</div>
     <div class="calc-container">
         <div class="section-card" style="padding:24px;">
             <div class="input-group"><label>Futures Instrument</label><select id="cm-inst" onchange="cmRun()"></select></div>
@@ -382,7 +413,7 @@ const FEEDS = [
     { code: 'MGC', name: 'Micro Gold', tick: 0.1, val: 1.00, cost: 1.20 },
     { code: 'SI', name: 'Silver', tick: 0.005, val: 25.00, cost: 3.10 },
     { code: 'SIL', name: 'Micro Silver', tick: 0.001, val: 5.00, cost: 1.20 },
-    { code: 'HG', name: 'Copper', tick: 0.0005, val: 12.50, cost: 3.10 },
+    { code: 'HG', name: 'Copper Futures', tick: 0.0005, val: 12.50, cost: 3.10 },
     { code: 'MHG', name: 'Micro Copper', tick: 0.001, val: 2.50, cost: 1.20 },
     { code: 'CL', name: 'Crude Oil', tick: 0.01, val: 10.00, cost: 3.00 },
     { code: 'QM', name: 'E-mini Crude Oil', tick: 0.025, val: 12.50, cost: 2.70 },
@@ -390,6 +421,7 @@ const FEEDS = [
     { code: 'NG', name: 'Natural Gas', tick: 0.001, val: 10.00, cost: 3.10 },
     { code: 'QG', name: 'E-mini Natural Gas', tick: 0.005, val: 12.50, cost: 2.00 },
     { code: 'RB', name: 'RBOB Gasoline', tick: 0.0001, val: 4.20, cost: 3.00 },
+    { code: 'HO', name: 'NY Harbor ULSD', tick: 0.0001, val: 4.20, cost: 3.00 },
     { code: 'HE', name: 'Lean Hogs', tick: 0.00025, val: 10.00, cost: 3.60 },
     { code: 'LE', name: 'Live Cattle', tick: 0.00025, val: 10.00, cost: 3.60 },
     { code: 'ZC', name: 'Corn', tick: 0.25, val: 12.50, cost: 3.60 },
@@ -444,7 +476,7 @@ function switchMainTab(tab) {
 let currentCcMode = 'legacy';
 function setCcMode(m, btn) {
     currentCcMode = m;
-    document.querySelectorAll('.tool-section#tool-consistency .pill-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pill-tab').forEach(t => { if(t.parentElement.className.includes("tabs")) t.classList.remove('active'); });
     btn.classList.add('active');
     document.getElementById('cc-legacy-view').style.display = m === 'legacy' ? 'block' : 'none';
     document.getElementById('cc-rapid-view').style.display = m === 'rapid' ? 'block' : 'none';
@@ -472,7 +504,7 @@ function calcLegacy() {
     const isV = max > (target * 0.4);
     const final = isV ? max / 0.4 : target;
     document.getElementById('l-res-val').innerText = '$' + final.toLocaleString(undefined, {minimumFractionDigits:2});
-    document.getElementById('l-breakdown').innerHTML = isV ? `Violation: Highest day ($${max.toLocaleString()}) exceeds 40% threshold ($${(target*0.4).toLocaleString()}).<br>Adjustment: $${max.toLocaleString()} / 0.40 = $${final.toLocaleString()}` : "Account compliant. No single day exceeds 40% threshold.";
+    document.getElementById('l-breakdown').innerHTML = isV ? `Consistency Rule Violated: Highest day ($${max.toLocaleString()}) > 40% threshold.<br>Adjustment: $${max.toLocaleString()} / 0.40 = $${final.toLocaleString()}` : "Account compliant. No single day exceeds 40% threshold.";
     document.getElementById('l-msg').innerText = `Hello,\n\nI have reviewed your account performance. Your highest profit day was $${max.toLocaleString()}.\n\nAccording to our consistency rule, no single day can account for more than 40% of the profit target. Since your highest day exceeds this threshold, your profit target has been adjusted to $${final.toLocaleString()}.\n\nBest regards,\nFundedNext Support Team`;
     document.getElementById('l-reply-card').style.display = 'block';
 }
@@ -622,7 +654,7 @@ function cmRun() {
     const rate = a.cost;
     const total = rate * q * 2;
     document.getElementById('cm-val').innerText = '$' + total.toFixed(2);
-    document.getElementById('cm-math').innerText = `Calculation: $${rate.toFixed(2)} (Per Side) x ${q} Contracts x 2 (Entry + Exit) = $${total.toFixed(2)}`;
+    document.getElementById('cm-breakdown-math').innerText = `Calculation: $${rate.toFixed(2)} (Per Side) x ${q} Contracts x 2 (Entry + Exit) = $${total.toFixed(2)}`;
     document.getElementById('cm-reply').innerText = `Hello,\n\nI have reviewed the commissions for your trade on ${a.name} (${a.code}).\n\nYour account all-in rate is $${rate.toFixed(2)} per side. Since every trade requires an entry and an exit (open and close), the fee is applied twice for a round-turn.\n\nFor your trade of ${q} contract(s):\n2 x $${rate.toFixed(2)} x ${q} = $${total.toFixed(2)} total round-turn commission.\n\nBest regards,\nFundedNext Support Team`;
 }
 
