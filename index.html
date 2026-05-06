@@ -25,8 +25,6 @@
     --border2: #d1d5db;
     --green: #10b981;
     --green-light: #d1fae5;
-    --warn: #f59e0b;
-    --warn-light: #fef3c7;
     --red: #ef4444;
     --red-light: #fee2e2;
     --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
@@ -69,7 +67,7 @@
   .tool-section { display: none; }
   .tool-section.active { display: block; }
 
-  /* AGENT BAR */
+  /* AGENT IDENTITY BAR */
   .agent-bar { background: #f1f5f9; border: 1px solid var(--border); padding: 12px 24px; margin-bottom: 24px; border-radius: 10px; display: flex; align-items: center; gap: 12px; }
   .agent-bar span { font-size: 11px; font-weight: 800; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; }
   .agent-bar input { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--text3); outline: none; font-weight: 700; color: var(--brand); font-family: var(--font); flex: 1; max-width: 300px; transition: all 0.2s; }
@@ -82,59 +80,47 @@
     box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2), 0 2px 4px -1px rgba(79, 70, 229, 0.05); 
   }
   .btn-copy-premium:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -2px rgba(79, 70, 229, 0.05); }
-  .btn-copy-premium:active { transform: translateY(0); }
   .btn-copy-premium.success { background: var(--green) !important; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4); }
 
-  /* CARDS */
+  /* CARDS & UI */
   .section-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 24px; overflow: hidden; }
   .section-card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: #fafafa; }
-  
   .input-group { margin-bottom: 16px; }
   .input-group label { display: block; font-size: 11px; font-weight: 800; margin-bottom: 8px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; }
   .input-group input, .input-group select { width: 100%; padding: 14px; border: 1.5px solid var(--border2); border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; color: var(--navy); background: #fff; }
-
   .btn-primary { background: var(--brand); color: white; border: none; border-radius: 10px; padding: 14px 28px; font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow); }
   .btn-primary:hover { background: var(--brand-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
-
   .pill-tabs { display: flex; gap: 6px; margin-bottom: 24px; background: #f1f1f1; padding: 5px; border-radius: 14px; width: fit-content; border: 1px solid var(--border); }
   .pill-tab { padding: 8px 24px; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--text2); background: transparent; transition: all 0.2s; }
   .pill-tab.active { background: var(--white); color: var(--brand); box-shadow: var(--shadow); }
-
-  /* MATCHER */
-  .matcher-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
-  @media (max-width: 850px) { .matcher-grid { grid-template-columns: 1fr; } }
-  .paste-zone { background: var(--white); border: 2px solid var(--border); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
-  .paste-header { padding: 12px 16px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 900; color: var(--navy); text-transform: uppercase; }
-  .am-textarea { width: 100%; min-height: 260px; border: none; outline: none; background: transparent; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; padding: 16px; color: var(--text2); resize: vertical; }
 
   /* RESULTS GRID */
   .calc-container { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
   @media (max-width: 850px) { .calc-container { grid-template-columns: 1fr; } }
   .premium-result { background: var(--navy); color: white; border-radius: var(--radius); padding: 40px 30px; text-align: center; box-shadow: var(--shadow-md); position: relative; }
   .res-large { font-size: 48px; font-weight: 800; margin: 10px 0; letter-spacing: -0.02em; }
-  
   .step-label { font-size: 11px; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
   .step-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
+  /* ROWS & TABLES */
   .cc-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; background: #fff; padding: 10px 16px; border-radius: 10px; border: 1.5px solid var(--border); box-shadow: var(--shadow); }
   .cc-label { width: 50px; font-size: 11px; font-weight: 800; color: var(--text3); text-transform: uppercase; }
   .cc-input { flex: 1; border: none !important; background: transparent !important; font-weight: 600; font-size: 16px !important; outline: none; padding: 8px 0 !important; color: var(--navy); }
   .cc-del { color: #fca5a5; cursor: pointer; padding: 6px 10px; font-size: 18px; transition: color 0.2s; border: none; background: none; }
 
-  /* BREACH BREAKDOWN ROWS */
-  .bt-inputs { display: none; }
-  .bt-inputs.visible { display: block; }
   .bt-breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-radius: 8px; background: #fff; border: 1.5px solid var(--border); font-size: 13.5px; margin-bottom: 8px; }
   .bt-breakdown-row span:last-child { font-weight: 750; font-family: 'Courier New', monospace; }
   .br-violation { background: var(--red-light); color: #991b1b; }
   .br-compliant { background: var(--green-light); color: #065f46; }
 
-  .badge-pnl { display: inline-block; padding: 6px 20px; border-radius: 30px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 20px; letter-spacing: 0.1em; }
-  .badge-pnl.profit { background: var(--green); color: white; }
-  .badge-pnl.loss { background: var(--red); color: white; }
+  /* MATCHER */
+  .matcher-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  @media (max-width: 850px) { .matcher-grid { grid-template-columns: 1fr; } }
+  .am-textarea { width: 100%; min-height: 240px; border: none; outline: none; background: transparent; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; padding: 16px; color: var(--text2); resize: none; }
 
+  /* SUB STATS */
   .sub-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; }
-  .sub-stat-box { background: rgba(255,255,255,0.06); padding: 14px; border-radius: 10px; }
+  .sub-stat-box { background: rgba(255,255,255,0.06); padding: 14px; border-radius: 10px; text-align: left; }
   .sub-stat-label { font-size: 10px; opacity: 0.5; text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
   .sub-stat-val { font-size: 18px; font-weight: 700; font-family: 'Courier New', monospace; }
 
@@ -146,7 +132,7 @@
 <div class="topbar">
   <div class="topbar-left">
     <div class="topbar-logo">FN</div>
-    <div class="topbar-name">FundedNext <span class="topbar-version">v5.3</span></div>
+    <div class="topbar-name">FundedNext <span class="topbar-version">v6.6</span></div>
   </div>
   <div class="topbar-center">Internal Support Terminal</div>
   <div class="topbar-right"><div class="topbar-badge">Admin Level Access</div></div>
@@ -164,7 +150,7 @@
 
 <div class="page-container">
 
-  <!-- AGENT IDENTITY -->
+  <!-- AGENT BAR -->
   <div class="agent-bar">
     <span>Current Support Agent:</span>
     <input type="text" id="agent-name-input" placeholder="Enter Your Name" value="Tazien Morgan" oninput="updateAllMessages()">
@@ -183,7 +169,6 @@
                 <div class="step-label">Daily Net PnL Entries</div>
                 <div id="l-rows" style="margin-bottom:15px;"><div class="cc-row"><span class="cc-label">Day 1</span><input type="number" class="cc-input l-input" placeholder="0.00" oninput="calcLegacy()"></div></div>
                 <button class="btn-primary" onclick="ccAddRow('l')" style="background:var(--bg); color:var(--brand); width:100%; border:1.5px dashed var(--border2); margin-bottom:16px; box-shadow: none;">+ Add Trading Day</button>
-                <button class="btn-primary" onclick="calcLegacy()" style="width:100%; justify-content:center;">Calculate Final Target</button>
             </div>
             <div class="premium-result" style="background:var(--white); border:2px solid var(--border); color:var(--navy);">
                 <div class="step-label" style="justify-content:center;">Revised Profit Target</div>
@@ -196,25 +181,57 @@
             <div id="l-msg" class="reply-area"></div>
         </div>
     </div>
+
+    <div id="cc-rapid-view" style="display:none;">
+        <div class="calc-container">
+            <div class="section-card" style="padding:24px;">
+                <div class="input-group"><label>Account Size</label><select id="r-size" onchange="calcRapid()"><option value="25000">$25,000</option><option value="50000" selected>$50,000</option><option value="100000">$100,000</option></select></div>
+                <div class="input-group"><label>Last Withdrawal Date</label><input type="date" id="r-withdrawal" onchange="calcRapid()"></div>
+                <div class="step-label">Current Cycle PnL Entries</div>
+                <div id="r-rows" style="margin-bottom:15px;"><div class="cc-row"><span class="cc-label">Day 1</span><input type="number" class="cc-input r-input" placeholder="0.00" oninput="calcRapid()"></div></div>
+                <button class="btn-primary" onclick="ccAddRow('r')" style="background:var(--bg); color:var(--brand); width:100%; border:1.5px dashed var(--border2); margin-bottom:16px; box-shadow: none;">+ Add Trading Day</button>
+            </div>
+            <div class="premium-result" style="background:var(--white); border:2px solid var(--border); color:var(--navy);">
+                <div class="step-label" style="justify-content:center;">Consistency Ratio</div>
+                <div id="r-res-val" class="res-large" style="color:var(--brand)">0.00%</div>
+                <div id="r-status" style="font-weight:800; margin-top:10px; font-size:12px; margin-bottom: 10px;">--</div>
+                <div id="r-breakdown" style="font-size:12px; color:var(--text3); margin-top:15px; font-weight:600; line-height: 1.5; white-space: pre-wrap; text-align: left;">Enter data to analyze consistency.</div>
+            </div>
+        </div>
+        <div class="section-card" id="r-reply-card" style="display:none; margin-top:24px;">
+            <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('r-msg', this)">Copy Message</button></div>
+            <div id="r-msg" class="reply-area"></div>
+        </div>
+    </div>
   </div>
 
-  <!-- ================= MATCHER ================= -->
+  <!-- ================= ACCOUNT MATCHER (RESTORED BOXES) ================= -->
   <div id="tool-matcher" class="tool-section">
     <div class="matcher-grid">
-      <div class="paste-zone">
-        <div class="paste-header">Challenge (Demo) Table</div>
-        <textarea class="am-textarea" id="paste-ch" placeholder="Paste Challenge table records here..."></textarea>
+      <!-- Challenge Card -->
+      <div class="section-card">
+        <div class="section-card-header">
+           <span class="step-label" style="margin-bottom:0">Challenge Accounts (Demo)</span>
+           <span id="match-ch-count" style="font-size:10px; color:var(--brand); font-weight:800;">0 detected</span>
+        </div>
+        <textarea class="am-textarea" id="paste-ch" oninput="runDualMatcher()" placeholder="Paste Challenge table records here..."></textarea>
       </div>
-      <div class="paste-zone">
-        <div class="paste-header">FundedNext (Real) Table</div>
-        <textarea class="am-textarea" id="paste-fn" placeholder="Paste FundedNext table records here..."></textarea>
+      <!-- FundedNext Card -->
+      <div class="section-card">
+        <div class="section-card-header">
+           <span class="step-label" style="margin-bottom:0">FundedNext Accounts (Real)</span>
+           <span id="match-fn-count" style="font-size:10px; color:var(--brand); font-weight:800;">0 detected</span>
+        </div>
+        <textarea class="am-textarea" id="paste-fn" oninput="runDualMatcher()" placeholder="Paste FundedNext table records here..."></textarea>
       </div>
     </div>
-    <button class="btn-primary" onclick="runDualMatcher()" style="width:100%; justify-content:center; padding:18px;">🔍 Find Unconverted Accounts</button>
     <div id="matcher-results" style="display:none; margin-top:24px;">
-        <div class="section-card"><div id="matcher-list" style="padding:24px; font-family:monospace; font-weight:700; color:var(--brand); line-height: 1.6;"></div></div>
         <div class="section-card">
-            <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('matcher-text', this)">Copy Draft</button></div>
+            <div class="section-card-header"><span class="step-label" style="margin-bottom:0">Eligible Accounts (Not Converted)</span></div>
+            <div id="matcher-list" style="padding:24px; font-family:monospace; font-weight:700; color:var(--brand); line-height: 1.6;"></div>
+        </div>
+        <div class="section-card">
+            <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('matcher-text', this)">Copy Ticket Draft</button></div>
             <div class="reply-area" id="matcher-text"></div>
         </div>
     </div>
@@ -224,21 +241,36 @@
   <div id="tool-breach" class="tool-section">
     <div class="section-card" style="padding:24px; margin-bottom:24px;">
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-        <div class="input-group"><label>Account Stage</label><select id="bt-type" onchange="btInit()"><option value="bolt">Bolt</option><option value="rapid">Rapid</option><option value="legacy">Legacy</option><option value="funded">Funded</option></select></div>
-        <div class="input-group"><label>Account Size</label><select id="bt-size" onchange="btInit()"></select></div>
+        <div class="input-group">
+            <label>Account Model & Stage</label>
+            <select id="bt-stage" onchange="btInit()">
+                <optgroup label="Bolt Model">
+                    <option value="bolt_ch">Bolt Challenge (Trailing)</option>
+                    <option value="bolt_fn">Bolt Funded (Trailing)</option>
+                </optgroup>
+                <optgroup label="Rapid Model">
+                    <option value="rapid_ch">Rapid Challenge (Trailing)</option>
+                    <option value="rapid_fn">Rapid Funded (Trailing)</option>
+                </optgroup>
+                <optgroup label="Legacy Model">
+                    <option value="legacy_ch">Legacy Challenge (Trailing)</option>
+                    <option value="legacy_fn">Legacy Funded (Trailing)</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="input-group"><label>Account Size</label><select id="bt-size" onchange="btLive()"></select></div>
       </div>
     </div>
     <div class="pill-tabs">
       <button id="bt-tab-mll" class="pill-tab active" onclick="setBtTab('mll', this)">Monthly Loss (MLL)</button>
       <button id="bt-tab-dll" class="pill-tab" onclick="setBtTab('dll', this)">Daily Loss (DLL)</button>
     </div>
-    
     <div id="bt-inputs-zone">
       <div id="bt-mll-inputs" class="bt-inputs visible">
           <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px;">
             <div class="input-group"><label>Starting Balance</label><input type="number" id="bt-start" placeholder="50000" oninput="btLive()"></div>
             <div class="input-group"><label>Highest Balance</label><input type="number" id="bt-high" placeholder="53000" oninput="btLive()"></div>
-            <div class="input-group"><label>Current Balance</label><input type="number" id="bt-curr" placeholder="48999" oninput="btLive()"></div>
+            <div class="input-group"><label>Current Balance</label><input type="number" id="bt-curr" placeholder="49999" oninput="btLive()"></div>
           </div>
       </div>
       <div id="bt-dll-inputs" class="bt-inputs">
@@ -247,10 +279,9 @@
             <div class="input-group"><label>Current Equity</label><input type="number" id="bt-dll-equity" oninput="btLive()"></div>
           </div>
       </div>
-      <div id="bt-live-status" style="text-align:center; padding:15px; border-radius:12px; background:var(--white); border:2px solid var(--border); font-weight:700; color:var(--text3); margin-bottom:24px;">Waiting for input.</div>
+      <div id="bt-live-status" style="text-align:center; padding:15px; border-radius:12px; background:var(--white); border:2px solid var(--border); font-weight:700; color:var(--text3); margin-bottom:24px;">Enter values for analysis.</div>
     </div>
     <button class="btn-primary" onclick="btGenerate()" style="width:100%; justify-content:center; padding:16px;">📝 Generate Response</button>
-    
     <div id="bt-result-area" style="display:none; margin-top:24px;">
       <div class="section-card"><div id="bt-breakdown-body" style="padding: 20px; display: flex; flex-direction: column; gap: 2px;"></div></div>
       <div class="section-card">
@@ -268,25 +299,22 @@
             <div class="input-group"><label>Contracts</label><input type="number" id="cm-qty" value="1" min="1" oninput="cmRun()"></div>
         </div>
         <div class="premium-result">
-            <div class="step-label" style="justify-content:center; color:rgba(255,255,255,0.6)">Final Round-Turn Cost</div>
+            <div class="step-label" style="justify-content:center; color:rgba(255,255,255,0.6)">Detailed Round-Turn Cost</div>
             <div id="cm-val" class="res-large">$0.00</div>
-            <div id="cm-math" style="font-size:13px; opacity:0.9; font-family:monospace; margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.15)">--</div>
+            <div class="sub-stats">
+                <div class="sub-stat-box"><div class="sub-stat-label">Per Side Rate</div><div id="cm-per-side" class="sub-stat-val">$0.00</div></div>
+                <div class="sub-stat-box"><div class="sub-stat-label">Calculation</div><div id="cm-calc-string" style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7); margin-top: 4px;">--</div></div>
+            </div>
         </div>
     </div>
-    <div class="section-card" style="margin-top:24px;">
-        <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('cm-reply', this)">Copy Message</button></div>
-        <div id="cm-reply" class="reply-area"></div>
-    </div>
+    <div class="section-card" style="margin-top:24px;"><div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('cm-reply', this)">Copy Message</button></div><div id="cm-reply" class="reply-area"></div></div>
   </div>
 
   <!-- ================= P&L CALCULATOR ================= -->
   <div id="tool-pnl" class="tool-section">
     <div class="calc-container">
         <div class="section-card" style="padding:24px;">
-            <div class="pill-tabs" style="width:100%; margin-bottom:20px;">
-                <button id="pnl-side-buy" class="pill-tab active" style="flex:1" onclick="pnlSetSide('buy', this)">LONG</button>
-                <button id="pnl-side-sell" class="pill-tab" style="flex:1" onclick="pnlSetSide('sell', this)">SHORT</button>
-            </div>
+            <div class="pill-tabs"><button id="pnl-side-buy" class="pill-tab active" style="flex:1" onclick="pnlSetSide('buy', this)">LONG</button><button id="pnl-side-sell" class="pill-tab" style="flex:1" onclick="pnlSetSide('sell', this)">SHORT</button></div>
             <div class="input-group"><label>Instrument</label><select id="pnl-inst" onchange="pnlRun()"></select></div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                 <div class="input-group"><label>Entry Price</label><input type="number" id="pnl-entry" step="any" oninput="pnlRun()"></div>
@@ -298,21 +326,23 @@
             <div id="pnl-pill" class="badge-pnl profit">Estimated Result</div>
             <div id="pnl-val" class="res-large">$0.00</div>
             <div class="sub-stats">
-                <div class="sub-stat-box"><div class="sub-stat-label">Points</div><div id="pnl-pts" class="sub-stat-val">0.00</div></div>
-                <div class="sub-stat-box"><div class="sub-stat-label">Ticks</div><div id="pnl-tks" class="sub-stat-val">0</div></div>
+                <div class="sub-stat-box"><div class="sub-stat-label">Tick Value</div><div id="pnl-tick-val" class="sub-stat-val">$0.00</div></div>
+                <div class="sub-stat-box"><div class="sub-stat-label">Total Ticks</div><div id="pnl-tks" class="sub-stat-val">0</div></div>
+                <div class="sub-stat-box" style="grid-column: span 2;"><div class="sub-stat-label">Detailed Breakdown</div><div id="pnl-breakdown-math" style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7);">--</div></div>
             </div>
         </div>
     </div>
-    <div class="section-card" style="margin-top:24px;">
-        <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('pnl-reply', this)">Copy Message</button></div>
-        <div id="pnl-reply" class="reply-area"></div>
-    </div>
+    <div class="section-card" style="margin-top:24px;"><div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('pnl-reply', this)">Copy Message</button></div><div id="pnl-reply" class="reply-area"></div></div>
   </div>
 
 </div>
 
 <script>
-// INSTRUMENT REPOSITORY
+// --- GLOBAL STATE ---
+let activeBreachTab = 'mll';
+let pnlSide = 'buy';
+
+// DATA REPOSITORY
 const FEEDS = [
     { code: '6A', name: 'Australian Dollar', tick: 0.0001, val: 10.00, cost: 3.10 },
     { code: 'M6A', name: 'Micro AUD/USD', tick: 0.0001, val: 1.00, cost: 0.84 },
@@ -327,27 +357,23 @@ const FEEDS = [
     { code: 'MNQ', name: 'Micro NASDAQ-100', tick: 0.25, val: 0.50, cost: 0.95 },
     { code: 'ES', name: 'E-mini S&P 500', tick: 0.25, val: 12.50, cost: 2.88 },
     { code: 'MES', name: 'Micro E-mini S&P 500', tick: 0.25, val: 1.25, cost: 0.95 },
-    { code: 'RTY', name: 'E-mini Russell 2000', tick: 0.1, val: 5.00, cost: 2.88 },
-    { code: 'M2K', name: 'Micro Russell 2000', tick: 0.1, val: 1.00, cost: 0.95 },
-    { code: 'YM', name: 'E-mini Dow Jones', tick: 1.0, val: 5.00, cost: 2.88 },
-    { code: 'MYM', name: 'Micro Dow Jones', tick: 1.0, val: 0.50, cost: 0.95 },
     { code: 'GC', name: 'Gold', tick: 0.1, val: 10.00, cost: 3.10 },
     { code: 'MGC', name: 'Micro Gold', tick: 0.1, val: 1.00, cost: 1.20 },
-    { code: 'HG', name: 'Copper', tick: 0.0005, val: 12.50, cost: 3.10 },
-    { code: 'SI', name: 'Silver', tick: 0.005, val: 25.00, cost: 3.10 },
     { code: 'CL', name: 'Crude Oil', tick: 0.01, val: 10.00, cost: 3.00 },
     { code: 'QM', name: 'E-mini Crude Oil', tick: 0.025, val: 12.50, cost: 2.70 },
-    { code: 'NG', name: 'Natural Gas', tick: 0.001, val: 10.00, cost: 3.10 },
-    { code: 'EMD', name: 'E-mini Midcap 400', tick: 0.1, val: 10.00, cost: 2.83 }
+    { code: 'NG', name: 'Natural Gas', tick: 0.001, val: 10.00, cost: 3.10 }
 ];
 
 const BT_LIMITS = { 
-    bolt: { mll: { '50000': 2000 }, dll: { '50000': 1000 }, sizes: ['50000'] }, 
-    legacy: { mll: { '25000': 1000, '50000': 2000, '100000': 3000 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 }, sizes: ['25000','50000','100000'] },
-    rapid: { mll: { '25000': 1000, '50000': 2000, '100000': 2500 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 }, sizes: ['25000','50000','100000'] },
-    funded: { mll: null, dll: { '25000': 500, '50000': 1000, '100000': 2000 }, sizes: ['25000','50000','100000'] }
+  bolt_ch:   { mll: { '50000': 2000 }, dll: { '50000': 1000 } }, 
+  bolt_fn:   { mll: { '50000': 2000 }, dll: { '50000': 1000 } },
+  rapid_ch:  { mll: { '25000': 1000, '50000': 2000, '100000': 2500 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 } },
+  rapid_fn:  { mll: { '25000': 1000, '50000': 2000, '100000': 2500 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 } },
+  legacy_ch: { mll: { '25000': 1000, '50000': 2000, '100000': 3000 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 } },
+  legacy_fn: { mll: { '25000': 1000, '50000': 2000, '100000': 3000 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 } }
 };
 
+// INITIALIZATION
 window.onload = () => {
     const cmSel = document.getElementById('cm-inst');
     const pnlSel = document.getElementById('pnl-inst');
@@ -363,19 +389,16 @@ function getSignature() { return `Best Regards,\n${getAgentName()}\nFundedNext L
 
 function updateAllMessages() {
     if(document.getElementById('l-reply-card').style.display === 'block') calcLegacy();
+    if(document.getElementById('r-reply-card').style.display === 'block') calcRapid();
     if(document.getElementById('matcher-results').style.display === 'block') runDualMatcher();
     if(document.getElementById('bt-result-area').style.display === 'block') btGenerate();
-    cmRun(); 
-    pnlRun();
+    cmRun(); pnlRun();
 }
 
 function copyById(id, btn) {
     const text = document.getElementById(id).innerText;
     const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
-    if(document.execCommand('copy')) {
-        const oldHtml = btn.innerHTML; btn.innerHTML = "✓ Copied!"; btn.classList.add('success');
-        setTimeout(() => { btn.innerHTML = oldHtml; btn.classList.remove('success'); }, 2000);
-    }
+    document.execCommand('copy'); btn.innerHTML = "✓ Copied!"; setTimeout(() => { btn.innerHTML = "Copy Message"; }, 2000);
     document.body.removeChild(ta);
 }
 
@@ -384,105 +407,148 @@ function switchMainTab(tab) {
   document.querySelectorAll('.tool-section').forEach(s => s.classList.toggle('active', s.id === 'tool-'+tab));
 }
 
-// CONSISTENCY
 function setCcMode(m, btn) {
     document.querySelectorAll('#tool-consistency .pill-tab').forEach(t => t.classList.remove('active')); btn.classList.add('active');
     document.getElementById('cc-legacy-view').style.display = m === 'legacy' ? 'block' : 'none';
+    document.getElementById('cc-rapid-view').style.display = m === 'rapid' ? 'block' : 'none';
 }
+
 function ccAddRow(p) {
     const cont = document.getElementById(p + '-rows');
     const div = document.createElement('div'); div.className = 'cc-row';
-    div.innerHTML = `<span class="cc-label">Day ${cont.children.length+1}</span><input type="number" class="cc-input ${p}-input" placeholder="0.00" oninput="calcLegacy()"><button class="cc-del" onclick="this.parentElement.remove(); calcLegacy()">×</button>`;
+    div.innerHTML = `<span class="cc-label" style="width: 50px; font-size: 11px; font-weight: 800; color: var(--text3);">Day ${cont.children.length+1}</span><input type="number" class="cc-input ${p}-input" style="flex:1; border:none; background:transparent; font-weight:600; font-size:16px; outline:none;" placeholder="0.00" oninput="${p==='l'?'calcLegacy()':'calcRapid()'}"><button class="cc-del" onclick="this.parentElement.remove(); ${p==='l'?'calcLegacy()':'calcRapid()'}">×</button>`;
     cont.appendChild(div);
 }
+
+// CONSISTENCY MATH
 function calcLegacy() {
     const size = parseInt(document.getElementById('l-size').value); const target = size * 0.06;
     let max = 0; document.querySelectorAll('.l-input').forEach(i => { const v = parseFloat(i.value)||0; if(v > max) max = v; });
     const isV = max > (target * 0.4); const final = isV ? max / 0.4 : target;
     const fmt = n => '$' + n.toLocaleString(undefined, {minimumFractionDigits: 2});
     document.getElementById('l-res-val').innerText = fmt(final);
-    document.getElementById('l-breakdown').innerText = `• Base Profit Goal: ${fmt(target)}\n• 40% Threshold: ${fmt(target*0.4)}\n• Highest Day: ${fmt(max)}\n${isV ? `• Adjustment Math: ${fmt(max)} / 0.40 = ${fmt(final)}` : '• Status: Compliant'}`;
+    document.getElementById('l-breakdown').innerText = `• Original Goal: ${fmt(target)}\n• 40% Threshold: ${fmt(target*0.4)}\n• Highest Day: ${fmt(max)}\n${isV ? `• Adjustment Math: ${fmt(max)} / 0.40 = ${fmt(final)}` : '• Status: Compliant'}`;
     let msg = `Hello,\n\nI have reviewed your account performance. Your highest profit day was ${fmt(max)}.\n\nAccording to our consistency rule, no single day can account for more than 40% of the profit target. `;
     if (isV) msg += `Since your highest day (${fmt(max)}) exceeds this threshold, your profit target has been adjusted to ${fmt(final)} (Calculated as: ${fmt(max)} / 0.40).\n\n`;
     else msg += `Your account remains compliant as your highest single day is within the permitted threshold.\n\n`;
     msg += getSignature();
-    document.getElementById('l-msg').innerText = msg;
-    document.getElementById('l-reply-card').style.display = 'block';
+    document.getElementById('l-msg').innerText = msg; document.getElementById('l-reply-card').style.display = 'block';
 }
 
-// MATCHER
+function calcRapid() {
+    let total = 0, max = 0; document.querySelectorAll('.r-input').forEach(i => { const v = parseFloat(i.value)||0; total += v; if(v > max) max = v; });
+    const ratio = total > 0 ? (max / total) * 100 : 0;
+    const isV = ratio > 40; const fmt = n => '$' + n.toLocaleString(undefined, {minimumFractionDigits: 2});
+    document.getElementById('r-res-val').innerText = ratio.toFixed(2) + '%';
+    const status = document.getElementById('r-status');
+    status.innerText = isV ? "RATIO EXCEEDED" : "ELIGIBLE";
+    status.style.color = isV ? "var(--red)" : "var(--green)";
+    document.getElementById('r-breakdown').innerText = `• Total Profit: ${fmt(total)}\n• Highest Day: ${fmt(max)}\n• Formula: (${fmt(max)} / ${fmt(total)}) × 100 = ${ratio.toFixed(2)}%`;
+    let msg = `Hello,\n\nI have analyzed your Rapid account consistency. SUMMARY:\n• Total Profit: ${fmt(total)}\n• Highest Day: ${fmt(max)}\n• Ratio: ${ratio.toFixed(2)}%\n\n${getSignature()}`;
+    document.getElementById('r-msg').innerText = msg; document.getElementById('r-reply-card').style.display = 'block';
+}
+
+// ACCOUNT MATCHER
 function runDualMatcher() {
-    const parse = (t) => { const list = []; t.split('\n').forEach(l => { const m = /\b(\d{9})\b/.exec(l); if(m) list.push({ login: m[1], reached: l.toLowerCase().includes('profit target reached') }); }); return list; };
-    const chs = parse(document.getElementById('paste-ch').value), fns = parse(document.getElementById('paste-fn').value);
-    const fnSet = new Set(fns.map(f => f.login)); const unconverted = chs.filter(c => c.reached && !fnSet.has(c.login));
-    document.getElementById('matcher-list').innerHTML = unconverted.map(u => `<div>ID: ${u.login} → STATUS: UNCONVERTED</div>`).join('') || "No gaps found.";
-    document.getElementById('matcher-text').innerText = `Hello,\n\nI have verified accounts reached target but await conversion: ${unconverted.map(u=>u.login).join(', ')}.\n\n${getSignature()}`;
+    const parse = (text) => { const results = []; text.split('\n').forEach(line => { const m = line.match(/\b(\d{9})\b/); if(m && line.toLowerCase().includes('profit target reached')) results.push(m[1]); }); return results; };
+    const chAcc = parse(document.getElementById('paste-ch').value);
+    const fnAcc = document.getElementById('paste-fn').value.match(/\b(\d{9})\b/g) || [];
+    const fnSet = new Set(fnAcc); const unconverted = chAcc.filter(id => !fnSet.has(id));
+    document.getElementById('match-ch-count').innerText = `${chAcc.length} passed`;
+    document.getElementById('match-fn-count').innerText = `${fnAcc.length} detected`;
+    const listEl = document.getElementById('matcher-list');
+    if (unconverted.length > 0) {
+        listEl.innerHTML = unconverted.map(id => `<div>ID: ${id} → STATUS: UNCONVERTED</div>`).join('');
+        document.getElementById('matcher-text').innerText = `Hello,\n\nVerified accounts reached target but not converted: ${unconverted.join(', ')}.\n\n${getSignature()}`;
+    } else { listEl.innerHTML = "No unconverted accounts detected."; document.getElementById('matcher-text').innerText = "All accounts matched."; }
     document.getElementById('matcher-results').style.display = 'block';
 }
 
-// BREACH
-let activeBreachTab = 'mll';
+// BREACH TOOL
 function setBtTab(t, btn) { activeBreachTab = t; document.querySelectorAll('#tool-breach .pill-tab').forEach(b => b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.bt-inputs').forEach(i => i.classList.remove('visible')); document.getElementById('bt-'+t+'-inputs').classList.add('visible'); btLive(); }
-function btInit() { const t = document.getElementById('bt-type').value; const sEl = document.getElementById('bt-size'); sEl.innerHTML = ""; if(BT_LIMITS[t]) BT_LIMITS[t].sizes.forEach(sz => sEl.add(new Option(sz/1000 + 'K', sz))); btLive(); }
+
+function btInit() {
+    const stage = document.getElementById('bt-stage').value;
+    const sEl = document.getElementById('bt-size');
+    const currentSize = sEl.value;
+    sEl.innerHTML = "";
+    if(BT_LIMITS[stage]) {
+        const sizes = stage.includes('bolt') ? ['50000'] : ['25000', '50000', '100000'];
+        sizes.forEach(sz => sEl.add(new Option('$' + parseInt(sz).toLocaleString(), sz)));
+        sEl.value = sizes.includes(currentSize) ? currentSize : "50000";
+    }
+    btLive();
+}
+
 function btLive() {
-    const type = document.getElementById('bt-type').value, size = document.getElementById('bt-size').value; if(!type || !BT_LIMITS[type]) return;
-    const fmt = n => '$' + n.toLocaleString();
+    const stage = document.getElementById('bt-stage').value;
+    const size = document.getElementById('bt-size').value;
+    if(!BT_LIMITS[stage] || !BT_LIMITS[stage].mll[size]) return;
+    const start = parseFloat(document.getElementById('bt-start').value || 0);
+    const h = parseFloat(document.getElementById('bt-high').value || 0);
+    const c = parseFloat(document.getElementById('bt-curr').value || 0);
+    const eod = parseFloat(document.getElementById('bt-dll-eod').value || 0);
+    const eq = parseFloat(document.getElementById('bt-dll-equity').value || 0);
     if (activeBreachTab === 'mll') {
-        const h = parseFloat(document.getElementById('bt-high').value || 0), c = parseFloat(document.getElementById('bt-curr').value || 0);
-        const mllAmt = (BT_LIMITS[type].mll && size) ? BT_LIMITS[type].mll[size] : 2000; const floor = h - mllAmt;
-        document.getElementById('bt-live-status').innerHTML = c < floor ? '<span style="color:var(--red)">BREACHED</span>' : '<span style="color:var(--green)">SAFE</span>';
+        const limit = BT_LIMITS[stage].mll[size];
+        const floor = Math.min(start, h - limit);
+        const isB = c <= floor;
+        document.getElementById('bt-live-status').innerHTML = isB ? '<span style="color:var(--red)">BREACHED</span>' : '<span style="color:var(--green)">SAFE</span>';
     } else {
-        const eod = parseFloat(document.getElementById('bt-dll-eod').value || 0), eq = parseFloat(document.getElementById('bt-dll-equity').value || 0);
-        const floor = eod - 1000;
-        document.getElementById('bt-live-status').innerHTML = eq <= floor ? '<span style="color:var(--red)">BREACHED</span>' : '<span style="color:var(--green)">SAFE</span>';
+        const isB = eq <= (eod - 1000);
+        document.getElementById('bt-live-status').innerHTML = isB ? '<span style="color:var(--red)">BREACHED</span>' : '<span style="color:var(--green)">SAFE</span>';
     }
 }
+
 function btGenerate() {
-    const type = document.getElementById('bt-type').value, size = document.getElementById('bt-size').value; if(!type || !BT_LIMITS[type]) return;
+    const stage = document.getElementById('bt-stage').value;
+    const size = document.getElementById('bt-size').value;
     const fmt = n => '$' + parseFloat(n).toLocaleString(undefined, {minimumFractionDigits: 2});
     const s = parseFloat(document.getElementById('bt-start').value || 0), h = parseFloat(document.getElementById('bt-high').value || 0), c = parseFloat(document.getElementById('bt-curr').value || 0);
     const eod = parseFloat(document.getElementById('bt-dll-eod').value || 0), eq = parseFloat(document.getElementById('bt-dll-equity').value || 0);
-    const mllAmt = (BT_LIMITS[type].mll && size) ? BT_LIMITS[type].mll[size] : 2000; const floor = h - mllAmt;
-    const isV = activeBreachTab === 'mll' ? (c < floor) : (eq <= (eod - 1000));
-    let breakdown = "";
+    const limitM = BT_LIMITS[stage].mll[size];
+    let breakdown = "", msg = "";
     if (activeBreachTab === 'mll') {
-        const buffer = c - floor;
-        breakdown = `<div class="bt-breakdown-row"><span>Starting Balance</span><span>${fmt(s)}</span></div><div class="bt-breakdown-row"><span>Highest Balance Reached</span><span>${fmt(h)}</span></div><div class="bt-breakdown-row"><span>MLL Trailing Distance</span><span>${fmt(mllAmt)}</span></div><div class="bt-breakdown-row"><span>MLL Floor Level</span><span>${fmt(floor)}</span></div><div class="bt-breakdown-row ${isV?'br-violation':'br-compliant'}"><span>Current Account Balance</span><span>${fmt(c)}</span></div><div class="bt-breakdown-row"><span>Available Buffer</span><span>${isV ? 'EXCEEDED' : fmt(buffer)}</span></div>`;
-        if (isV) document.getElementById('bt-text').innerText = `Highest Balance Reached: ${fmt(h)}\n\nThis is the highest balance your account has achieved since you began trading. This figure is important as it is used to determine your Maximum Loss Limit (MLL).\n\nMaximum Loss Limit (MLL): ${fmt(floor)}\n\nBased on your highest balance of ${fmt(h)}, your MLL is set at ${fmt(floor)}. The MLL is a dynamic threshold that adjusts as your account grows. It is designed to protect both your account and overall trading conditions. If your balance falls below this level at any point, it will be considered a breach and trading will be disabled.\n\nCurrent Account Balance: ${fmt(c)}\n\nYour account is currently at ${fmt(c)}.\n\nWHAT THIS MEANS FOR YOU\nIt is essential to remain mindful of your MLL when placing trades. We strongly recommend monitoring your balance regularly and setting appropriate stop-loss levels to ensure your account stays above the MLL threshold.\nIf you need assistance calculating your available buffer or understanding how the MLL adjusts with your balance, feel free to reach out—we’ll be happy to guide you.\n\n${getSignature()}`;
-        else document.getElementById('bt-text').innerText = `ACCOUNT REVIEW SUMMARY\nHighest Balance Reached: ${fmt(h)}\n\nThis is the highest balance your account has achieved since you began trading. This figure is important as it is used to determine your Maximum Loss Limit (MLL).\n\nMaximum Loss Limit (MLL): ${fmt(floor)}\n\nBased on your highest balance of ${fmt(h)}, your MLL is currently set at ${fmt(floor)}. This is a dynamic threshold that adjusts as your account grows and serves as a protective limit for your account.\n\nCurrent Account Balance: ${fmt(c)}\n\nYour account is currently at ${fmt(c)}, which remains above your Maximum Loss Limit.\n\nACCOUNT STATUS\nAfter carefully reviewing your trading activity and balance history, we can confirm that your account has not breached the Maximum Loss Limit and remains in good standing.\n\nWHAT THIS MEANS FOR YOU\nYou can continue trading as usual. However, it is important to remain mindful of your MLL when placing trades. We recommend regularly monitoring your balance and setting appropriate risk management measures, such as stop-loss levels, to maintain a safe buffer above the MLL.\n\nIf you would like help calculating your current buffer or understanding how the MLL adjusts as your balance changes, feel free to reach out—we’ll be happy to assist you.\n\n${getSignature()}`;
+        const floor = Math.min(s, h - limitM);
+        const isV = c <= floor;
+        const isLocked = floor >= s;
+        breakdown = `<div class="bt-breakdown-row"><span>Starting Balance</span><span>${fmt(s)}</span></div><div class="bt-breakdown-row"><span>Highest Balance reached</span><span>${fmt(h)}</span></div><div class="bt-breakdown-row"><span>MLL Trailing Distance</span><span>${fmt(limitM)}</span></div><div class="bt-breakdown-row"><span>MLL Floor Level</span><span>${fmt(floor)} ${isLocked?'(LOCKED)':''}</span></div><div class="bt-breakdown-row ${isV?'br-violation':'br-compliant'}"><span>Current Account Balance</span><span>${fmt(c)}</span></div><div class="bt-breakdown-row"><span>Available Buffer</span><span>${isV ? 'EXCEEDED' : fmt(c - floor)}</span></div>`;
+        if (isV) msg = `Highest Balance Reached: ${fmt(h)}\n\nMaximum Loss Limit (MLL): ${fmt(floor)}\n\nBased on your highest balance of ${fmt(h)}, your MLL is set at ${fmt(floor)}. The MLL trailing floor locks once it reaches your initial starting balance. Since your balance dropped to or below this level, the account was breached.\n\nCurrent Balance: ${fmt(c)}.\n\n${getSignature()}`;
+        else msg = `ACCOUNT REVIEW SUMMARY\nHighest Balance Reached: ${fmt(h)}\n\nMaximum Loss Limit (MLL): ${fmt(floor)}\n\nCurrent Account Balance: ${fmt(c)}\n\nAccount remains in good standing.\n\n${getSignature()}`;
     } else {
-        const dFloor = eod - 1000;
-        breakdown = `<div class="bt-breakdown-row"><span>Highest EOD Balance</span><span>${fmt(eod)}</span></div><div class="bt-breakdown-row"><span>Daily Loss Limit</span><span>$1,000.00</span></div><div class="bt-breakdown-row"><span>DLL Floor Level</span><span>${fmt(dFloor)}</span></div><div class="bt-breakdown-row ${isV?'br-violation':'br-compliant'}"><span>Current Equity</span><span>${fmt(eq)}</span></div>`;
-        document.getElementById('bt-text').innerText = `Hello,\n\nI have reviewed your account details. In the Futures trailing system, the Daily Loss Limit is calculated from your highest End-of-Day (EOD) balance. \n\nYour highest EOD balance was ${fmt(eod)}, establishing a breach level of ${fmt(dFloor)}. Since your equity reached ${fmt(eq)}, your account has experienced a soft breach.\n\n${getSignature()}`;
+        const floor = eod - 1000; const isV = eq <= floor;
+        breakdown = `<div class="bt-breakdown-row"><span>Highest EOD Balance</span><span>${fmt(eod)}</span></div><div class="bt-breakdown-row"><span>Daily Permitted Loss</span><span>$1,000.00</span></div><div class="bt-breakdown-row"><span>DLL Floor Level</span><span>${fmt(floor)}</span></div><div class="bt-breakdown-row ${isV?'br-violation':'br-compliant'}"><span>Current Equity</span><span>${fmt(eq)}</span></div>`;
+        msg = `Hello,\n\nDaily Loss is based on highest EOD (${fmt(eod)}). Breach level established at ${fmt(floor)}. Equity reached ${fmt(eq)}.\n\n${getSignature()}`;
     }
-    document.getElementById('bt-breakdown-body').innerHTML = breakdown; document.getElementById('bt-result-area').style.display = 'block';
+    document.getElementById('bt-breakdown-body').innerHTML = breakdown; document.getElementById('bt-text').innerText = msg; document.getElementById('bt-result-area').style.display = 'block';
 }
 
-// COMMISSION & PNL (EXPANDED DETAILS)
+// COMMISSION LOGIC
 function cmRun() {
     const a = FEEDS.find(i => i.code === document.getElementById('cm-inst').value);
     const q = parseFloat(document.getElementById('cm-qty').value) || 1; 
     const side = a ? a.cost : 3.10; const total = side * q * 2;
-    document.getElementById('cm-val').innerText = '$' + total.toFixed(2);
-    document.getElementById('cm-math').innerText = `$${side.toFixed(2)} (Per Side) x ${q} Contracts x 2 sides = $${total.toFixed(2)}`;
-    
-    document.getElementById('cm-reply').innerText = `Hello,\n\nI have reviewed the commissions for your trade on ${a ? a.name : 'the selected instrument'} (${a ? a.code : ''}).\n\nYour account all-in rate is $${side.toFixed(2)} per side. Since every trade requires an entry and an exit (open and close), the fee is applied twice for a complete round-turn.\n\nFor your trade of ${q} contract(s):\n2 sides x $${side.toFixed(2)} x ${q} = $${total.toFixed(2)} total round-turn commission.\n\n${getSignature()}`;
+    const fmt = n => '$' + n.toLocaleString(undefined, {minimumFractionDigits: 2});
+    document.getElementById('cm-val').innerText = fmt(total);
+    document.getElementById('cm-per-side').innerText = fmt(side);
+    document.getElementById('cm-calc-string').innerText = `${fmt(side)} x ${q} Cont. x 2 sides = ${fmt(total)}`;
+    document.getElementById('cm-reply').innerText = `Hello,\n\nI have reviewed the commissions for your trade on ${a?a.name:''}. Round-turn fee is ${fmt(total)} based on ${fmt(side)} per side.\n\n${getSignature()}`;
 }
 
-let pnlSide = 'buy';
+// PNL LOGIC
 function pnlSetSide(side, btn) { pnlSide = side; document.querySelectorAll('#tool-pnl .pill-tab').forEach(b => b.classList.remove('active')); btn.classList.add('active'); pnlRun(); }
 function pnlRun() {
     const a = FEEDS.find(i => i.code === document.getElementById('pnl-inst').value);
     const en = parseFloat(document.getElementById('pnl-entry').value) || 0, ex = parseFloat(document.getElementById('pnl-exit').value) || 0, q = parseFloat(document.getElementById('pnl-qty').value) || 1;
     const diff = pnlSide === 'buy' ? (ex - en) : (en - ex); 
     const tks = a ? (diff / a.tick) : 0; const tot = a ? (tks * a.val * q) : 0;
-    const absTotal = Math.abs(tot).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    const pnlStatus = tot >= 0 ? "Profit" : "Loss";
-
-    document.getElementById('pnl-val').innerText = '$' + tot.toLocaleString(undefined, {minimumFractionDigits: 2});
-    document.getElementById('pnl-pts').innerText = Math.abs(diff).toFixed(2); document.getElementById('pnl-tks').innerText = Math.abs(Math.round(tks));
-    
-    document.getElementById('pnl-reply').innerText = `Hello,\n\nI have reviewed your trade results for ${a ? a.name : 'the selected instrument'} (${a ? a.code : ''}).\n\nTRADE DETAILS:\n• Position Side: ${pnlSide === 'buy' ? 'Long (BUY)' : 'Short (SELL)'}\n• Entry Price: ${en.toFixed(2)}\n• Exit Price: ${ex.toFixed(2)}\n• Points Moved: ${Math.abs(diff).toFixed(2)}\n• Ticks Moved: ${Math.abs(Math.round(tks))} ticks\n• Tick Value: $${a ? a.val.toFixed(2) : '0.00'}\n• Contracts: ${q}\n\nCALCULATION:\n(${Math.abs(Math.round(tks))} Ticks × $${a ? a.val.toFixed(2) : '0.00'} Tick Value) × ${q} Contract(s) = $${absTotal}\n\nFINAL RESULT: A total ${pnlStatus} of $${absTotal} was recorded for this position.\n\n${getSignature()}`;
+    const fmt = n => '$' + n.toLocaleString(undefined, {minimumFractionDigits: 2});
+    document.getElementById('pnl-val').innerText = fmt(tot);
+    document.getElementById('pnl-tick-val').innerText = fmt(a ? a.val : 0);
+    document.getElementById('pnl-tks').innerText = Math.abs(Math.round(tks));
+    document.getElementById('pnl-breakdown-math').innerText = `(${Math.abs(Math.round(tks))} Ticks x ${fmt(a ? a.val : 0)}) x ${q} = ${fmt(tot)}`;
+    document.getElementById('pnl-pill').className = `badge-pnl ${tot >= 0 ? 'profit' : 'loss'}`;
+    document.getElementById('pnl-reply').innerText = `Hello,\n\nTrade Analysis for ${a?a.name:''}:\n• Position: ${pnlSide.toUpperCase()}\n• Move: ${Math.abs(Math.round(tks))} ticks\n• Result: ${fmt(tot)} ${tot>=0?'Profit':'Loss'}.\n\n${getSignature()}`;
 }
 </script>
 </body>
