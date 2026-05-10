@@ -346,7 +346,7 @@
     <div class="section-card" style="padding:24px; margin-bottom:24px;">
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
         <div class="input-group">
-            <label>Model & Stage</label>
+            <label>Account Model & Stage</label>
             <select id="bt-stage" onchange="btInit()">
                 <optgroup label="Bolt Model"><option value="bolt_ch">Bolt Challenge (Trailing)</option><option value="bolt_fn">Bolt Funded (Trailing)</option></optgroup>
                 <optgroup label="Rapid Model"><option value="rapid_ch">Rapid Challenge (Trailing)</option><option value="rapid_fn">Rapid Funded (Trailing)</option></optgroup>
@@ -368,7 +368,7 @@
           </div>
       </div>
       <div id="bt-dll-inputs" class="bt-inputs" style="display:none;">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 12px;">
             <div class="input-group"><label>Highest EOD Balance</label><input type="number" id="bt-dll-eod" oninput="btLive()"></div>
             <div class="input-group"><label>Current Balance</label><input type="number" id="bt-dll-equity" oninput="btLive()"></div>
           </div>
@@ -376,6 +376,14 @@
 
       <div id="bt-live-status" style="text-align:center; padding:15px; border-radius:12px; background:var(--white); border:2px solid var(--border); font-weight:700; color:var(--text3); margin-bottom:12px;">Enter values for analysis.</div>
 
+      <!-- BREACH CONFIRMATION (AGENT INPUT) -->
+      <div style="margin-bottom:16px;">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:700; font-size:12px; color:var(--red);">
+              <input type="checkbox" id="bt-breach-confirm" onchange="btLive()"> Is the account breached?
+          </label>
+      </div>
+
+      <!-- WITHDRAWAL SECTION -->
       <div style="margin-bottom:16px; border-top: 1px solid var(--border); padding-top: 16px;">
           <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:700; font-size:12px; color:var(--brand);">
               <input type="checkbox" id="bt-w-check" onchange="btToggleWithdrawal()"> Client has made a withdrawal
@@ -394,6 +402,7 @@
           </div>
       </div>
 
+      <!-- ESCALATION BANNER (DEPENDENT ON BREACH CONFIRMATION) -->
       <div id="bt-escalation-banner" class="escalation-banner" style="display:none;">
           <div style="display:flex; align-items:center; gap:8px;"><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2L1 18h18L10 2zm1 13H9v-2h2v2zm0-4H9V7h2v4z"/></svg> ESCALATION REQUIRED</div>
           <p style="font-size:12px; margin:0;">The current balance (<span id="bt-esc-bal">$0</span>) is above the calculated MLL floor (<span id="bt-esc-floor">$0</span>). This breach cannot be explained at agent level. Do NOT attempt to provide an explanation to the client. Raise a PO-Auto Liquidation ticket and escalate immediately to the Platform Operations Team.</p>
@@ -412,6 +421,7 @@
           <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('bt-text', this)">Copy Message</button></div>
           <div id="bt-text" class="reply-area"></div>
       </div>
+      <!-- INTERNAL ERROR PANEL -->
       <div id="bt-internal-error" class="escalation-banner" style="display:none; border-color:var(--red); background:var(--red-light); color:var(--red);">
           ⚠️ DO NOT RESPOND TO CLIENT — This case requires immediate escalation. The current balance (<span id="bt-int-bal">$0</span>) is above the calculated MLL floor (<span id="bt-int-floor">$0</span>), which means this breach cannot be explained or handled at agent level. Please raise a PO-Auto Liquidation ticket and forward this case to the Platform Operations Team immediately. Do not share any breach explanation with the client until the Platform Operations Team has reviewed and responded.
       </div>
@@ -445,7 +455,7 @@
 </div>
 
 <script>
-// --- UTILITIES (Moved to top for visibility) ---
+// --- UTILITIES ---
 function getAgentName() { 
   return document.getElementById('agent-name-input').value || 'Support Agent'; 
 }
@@ -642,31 +652,52 @@ function runDualMatcher() {
 function clearMatcher() { document.getElementById('paste-ch').value = ''; document.getElementById('paste-fn').value = ''; document.getElementById('matcher-results').style.display = 'none'; }
 function toggleExcluded() { const list = document.getElementById('excluded-sec'), btn = document.getElementById('excluded-toggle'); if (list.style.display === 'none') { list.style.display = 'block'; btn.innerText = "▼ Hide excluded accounts"; } else { list.style.display = 'none'; btn.innerText = "▶ Show excluded accounts"; } }
 
+// BREACH TOOL LOGIC
 function btInit() {
     const stage = document.getElementById('bt-stage').value, sEl = document.getElementById('bt-size'), cur = sEl.value; sEl.innerHTML = "";
     if(BT_LIMITS[stage]) { const sizes = stage.includes('bolt') ? ['50000'] : ['25000', '50000', '100000']; sizes.forEach(sz => sEl.add(new Option('$' + parseInt(sz).toLocaleString(), sz))); sEl.value = sizes.includes(cur) ? cur : "50000"; }
     btLive();
 }
 function btToggleWithdrawal() { document.getElementById('bt-w-inputs').style.display = document.getElementById('bt-w-check').checked ? 'block' : 'none'; btLive(); }
+
 function btLive() {
     const stage = document.getElementById('bt-stage').value, size = document.getElementById('bt-size').value; if(!BT_LIMITS[stage]) return;
     const fmt = n => '$' + parseFloat(n).toLocaleString(undefined, {minimumFractionDigits: 2});
     const start = parseFloat(document.getElementById('bt-start').value || 0), h = parseFloat(document.getElementById('bt-high').value || 0);
     const c = (activeBreachTab === 'mll') ? parseFloat(document.getElementById('bt-curr').value || 0) : parseFloat(document.getElementById('bt-dll-equity').value || 0);
+    
+    // MLL Floor Logic: trailing up with profit but hard-locking at initial balance
     const limitM = BT_LIMITS[stage].mll[size], floor = Math.min(start, h - limitM);
-    const escBanner = document.getElementById('bt-escalation-banner');
-    if (c > floor && c > 0 && h > 0) { escBanner.style.display = 'flex'; document.getElementById('bt-esc-bal').innerText = fmt(c); document.getElementById('bt-esc-floor').innerText = fmt(floor); } else { escBanner.style.display = 'none'; }
+    
+    // Withdrawal logic
     const wChecked = document.getElementById('bt-w-check').checked, wReq = parseFloat(document.getElementById('bt-w-req').value || 0);
-    let capWarning = false, wBreach = false;
+    let isWithdrawalBreach = false;
     if (wChecked && wReq > 0) {
         const model = stage.split('_')[0], caps = W_CAPS[model][size];
-        if (Array.isArray(caps)) { if (caps.includes(wReq)) capWarning = true; } else if (wReq === caps) capWarning = true;
-        if ((h - wReq) <= floor) wBreach = true;
+        if (Array.isArray(caps)) { if (caps.includes(wReq)) document.getElementById('bt-w-cap-warning').style.display = 'block'; } else if (wReq === caps) document.getElementById('bt-w-cap-warning').style.display = 'block';
+        // Formula: Highest Balance - Withdrawal Amount <= MLL Floor OR Current Balance <= Start Balance
+        if ((h - wReq) <= floor || c <= start) isWithdrawalBreach = true;
+    } else {
+        document.getElementById('bt-w-cap-warning').style.display = 'none';
     }
-    document.getElementById('bt-w-cap-warning').style.display = capWarning ? 'block' : 'none';
-    document.getElementById('bt-w-breach-warning').style.display = wBreach ? 'block' : 'none';
+    document.getElementById('bt-w-breach-warning').style.display = isWithdrawalBreach ? 'block' : 'none';
+
+    // Breach determination
+    const isMllBreach = (c <= floor || c <= start) && c > 0;
+    
+    // Escalation Required Display logic (FIX: Dependent on confirmation checkbox)
+    const isBreachedConfirmed = document.getElementById('bt-breach-confirm').checked;
+    const escBanner = document.getElementById('bt-escalation-banner');
+    if (isBreachedConfirmed && c > floor && c > start && c > 0 && h > 0 && !isWithdrawalBreach) {
+        escBanner.style.display = 'flex';
+        document.getElementById('bt-esc-bal').innerText = fmt(c);
+        document.getElementById('bt-esc-floor').innerText = fmt(floor);
+    } else {
+        escBanner.style.display = 'none';
+    }
+
     const statusEl = document.getElementById('bt-live-status');
-    if (wBreach || (c <= floor && c > 0)) { statusEl.innerHTML = '<span style="color:var(--red)">BREACHED</span>'; }
+    if (isWithdrawalBreach || isMllBreach) { statusEl.innerHTML = '<span style="color:var(--red)">BREACHED</span>'; }
     else { statusEl.innerHTML = '<span style="color:var(--green)">SAFE</span>'; }
 }
 
@@ -674,21 +705,27 @@ function btGenerate() {
     const stage = document.getElementById('bt-stage').value, size = document.getElementById('bt-size').value, fmt = n => '$' + parseFloat(n).toLocaleString(undefined, {minimumFractionDigits: 2});
     const s = parseFloat(document.getElementById('bt-start').value || 0), h = parseFloat(document.getElementById('bt-high').value || 0);
     const c = (activeBreachTab === 'mll') ? parseFloat(document.getElementById('bt-curr').value || 0) : parseFloat(document.getElementById('bt-dll-equity').value || 0);
-    const floor = Math.min(s, h - BT_LIMITS[stage].mll[size]);
-    if (c > floor && c > 0 && h > 0) {
+    const limitM = BT_LIMITS[stage].mll[size], floor = Math.min(s, h - limitM);
+    const wTicked = document.getElementById('bt-w-check').checked, wReq = parseFloat(document.getElementById('bt-w-req').value || 0);
+    const isBreachedConfirmed = document.getElementById('bt-breach-confirm').checked;
+
+    const isWithdrawalBreach = wTicked && wReq > 0 && ((h - wReq) <= floor || c <= s);
+    
+    // Internal Escalation Case
+    if (isBreachedConfirmed && c > floor && c > s && c > 0 && h > 0 && !isWithdrawalBreach) {
         document.getElementById('bt-internal-error').style.display = 'block'; document.getElementById('bt-int-bal').innerText = fmt(c); document.getElementById('bt-int-floor').innerText = fmt(floor);
         document.getElementById('bt-reply-card').style.display = 'none'; document.getElementById('bt-breakdown-body').innerHTML = ""; document.getElementById('bt-result-area').style.display = 'block'; return;
     }
     document.getElementById('bt-internal-error').style.display = 'none'; document.getElementById('bt-reply-card').style.display = 'block';
-    const wTicked = document.getElementById('bt-w-check').checked, wReq = parseFloat(document.getElementById('bt-w-req').value || 0);
+    
     let msg = "";
-    if (wTicked && wReq > 0 && ((h - wReq) <= floor)) {
+    if (isWithdrawalBreach) {
         const postWBal = c - wReq, wFloor = stage.includes('bolt') ? 50100 : s;
         msg = `Thank you for reaching out, and we appreciate your patience.\n\nFollowing our review, your Performance Reward withdrawal request was the cause of the breach.\n\nWITHDRAWAL DETAILS:\n• Last Withdrawal Amount: ${fmt(wReq)}\n• Pre-Withdrawal Balance: ${fmt(c)}\n• Post-Withdrawal Balance: ${fmt(postWBal)}\n• MLL Floor: ${fmt(wFloor)}\n\nAs part of our risk management policy, after a withdrawal is made, the MLL ${stage.includes('bolt')?'hard-locks at $50,100':'resets to the initial account balance'}. Since the deduction brought your balance to ${fmt(postWBal)}, a hard breach was triggered.\n\nNote: Withdrawing 100% of profit carries this risk if buffer is not maintained.\n\nThis constitutes a permanent hard breach.\n\n${getSignature()}`;
-    } else if (c <= floor) {
+    } else if (c <= floor || c <= s) {
         msg = `Thank you for reaching out.\n\nFollowing a detailed assessment, here is your account summary:\n\nACCOUNT REVIEW SUMMARY\nHighest Balance Reached: ${fmt(h)}\nMaximum Loss Limit (MLL): ${fmt(floor)}\nYour MLL is calculated based on the highest balance reached (${fmt(h)}). This is a trailing threshold that move up as your account grows, locks at the starting balance of ${fmt(s)} once reached, and never moves down. \n\nCurrent Account Balance: ${fmt(c)}\nYour balance dropped below the ${fmt(floor)} threshold, which constitutes a permanent hard breach.\n\nWe apologize for this outcome.\n\n${getSignature()}`;
     } else {
-        msg = `Hello,\n\nFollowing our review, please find the summary of your account status below:\n\nACCOUNT REVIEW SUMMARY\nHighest Balance Reached: ${fmt(h)}\nMaximum Loss Limit (MLL): ${fmt(floor)}\nYour MLL is calculated based on your peak balance and trails up with profits, locking permanently at your initial balance of ${fmt(s)}.\n\nCurrent Account Balance: ${fmt(c)}\n\nYour account is currently SAFE and within all risk parameters.\n\n${getSignature()}`;
+        msg = `Hello,\n\nFollowing our review, please find the summary of your account status below:\n\nACCOUNT REVIEW SUMMARY\nHighest Balance Reached: ${fmt(h)}\nMaximum Loss Limit (MLL): ${fmt(floor)}\nYour MLL is calculated based on your peak balance and trails up with profits, locking permanently at your initial balance of ${fmt(s)}.\n\nCurrent Account Balance: ${fmt(c)}\n\nYour account is currently SAFE and within all risk parameters. Please monitor the MLL floor closely going forward.\n\n${getSignature()}`;
     }
     document.getElementById('bt-breakdown-body').innerHTML = `<div class="bt-breakdown-row"><span>Start Balance</span><span>${fmt(s)}</span></div><div class="bt-breakdown-row"><span>Highest reached</span><span>${fmt(h)}</span></div><div class="bt-breakdown-row"><span>Floor Level</span><span>${fmt(floor)}</span></div><div class="bt-breakdown-row"><span>Current Balance</span><span>${fmt(c)}</span></div>`;
     document.getElementById('bt-text').innerText = msg; document.getElementById('bt-result-area').style.display = 'block';
@@ -712,7 +749,7 @@ function pnlRun() {
     document.getElementById('pnl-pts').innerText = Math.abs(diff).toFixed(2); document.getElementById('pnl-tks-val').innerText = `${absTicks} / ${fmt(a?a.val:0)}`;
     document.getElementById('pnl-math-detail').innerText = `(${signedTicks} Tks x ${fmt(a?a.val:0)} x ${q}) - ${fmt(totalComm)} = ${fmt(net)}`;
     document.getElementById('pnl-pill').innerText = net >= 0 ? "Net Profit" : "Net Loss"; document.getElementById('pnl-pill').className = `badge-pnl ${net >= 0 ? 'profit' : 'loss'}`;
-    let msg = `Hello,\n\nSection 1 — TRADE P&L BREAKDOWN:\n• Instrument: ${a?a.name:''}\n• Side: ${pnlSide.toUpperCase()}\n• Movement: ${Math.abs(diff).toFixed(2)} Points (${absTicks} Ticks)\n• Tick Value: ${fmt(a?a.val:0)}\n• Gross P&L Calculation: (${signedTicks} Ticks x ${fmt(a?a.val:0)}) x ${q} = ${fmt(gross)}\n\nSection 2 — COMMISSION BREAKDOWN:\n• Instrument Rate: ${fmt(sideCost)} per side\n• Sides applied: 2 (Entry + Exit)\n• Total Commission Calculation: (${fmt(sideCost)} x 2) x ${q} = ${fmt(totalComm)}\n\nFINAL SUMMARY:\n• Gross P&L: ${fmt(gross)}\n• Total Commission: -${fmt(totalComm)}\n• Net P&L: ${fmt(net)}\n\nResult: Net ${net >= 0 ? 'Profit' : 'Loss'} of ${fmt(Math.abs(net))}.\n\n${getSignature()}`;
+    let msg = `Hello,\n\nSection 1 — TRADE P&L BREAKDOWN:\n• Instrument: ${a?a.name:''}\n• Side: ${pnlSide.toUpperCase()}\n• Movement: ${Math.abs(diff).toFixed(2)} Points (${absTicks} Ticks)\n• Tick Value: ${fmt(a?a.val:0)}\n• Gross P&L Calculation: (${signedTicks} Tks x ${fmt(a?a.val:0)}) x ${q} = ${fmt(gross)}\n\nSection 2 — COMMISSION BREAKDOWN:\n• Instrument Rate: ${fmt(sideCost)} per side\n• Sides applied: 2 (Entry + Exit)\n• Total Commission Calculation: (${fmt(sideCost)} x 2) x ${q} = ${fmt(totalComm)}\n\nFINAL SUMMARY:\n• Gross P&L: ${fmt(gross)}\n• Total Commission: -${fmt(totalComm)}\n• Net P&L: ${fmt(net)}\n\nResult: Net ${net >= 0 ? 'Profit' : 'Loss'} of ${fmt(Math.abs(net))}.\n\n${getSignature()}`;
     document.getElementById('pnl-reply').innerText = msg;
 }
 </script>
