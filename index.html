@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -259,6 +259,7 @@
     <div class="pill-tabs">
         <button class="pill-tab active" onclick="setCcMode('legacy', this)">Legacy / Bolt</button>
         <button class="pill-tab" onclick="setCcMode('rapid', this)">Rapid</button>
+        <button class="pill-tab" onclick="setCcMode('flex', this)">Flex</button>
     </div>
     <div id="cc-legacy-view">
         <div class="calc-container">
@@ -309,6 +310,42 @@
         <div class="section-card" id="r-reply-card" style="display:none; margin-top:24px;">
             <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('r-msg', this)">Copy Message</button></div>
             <div id="r-msg" class="reply-area"></div>
+        </div>
+    </div>
+    <div id="cc-flex-view" style="display:none;">
+        <div class="calc-container">
+            <div class="section-card" style="padding:24px;">
+                <div class="input-group">
+                    <label>Account Size</label>
+                    <select id="f-size" onchange="calcFlex()">
+                        <option value="50000" selected>$50,000</option>
+                        <option value="100000">$100,000</option>
+                        <option value="150000">$150,000</option>
+                    </select>
+                </div>
+                <!-- Informational Note (UI Requirement) -->
+                <div style="font-size:12px; color:var(--brand); font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:6px;">
+                    <span>ℹ️</span> Consistency rule applies only during the Flex Challenge phase.
+                </div>
+                <div class="step-label">Daily Net PnL Entries</div>
+                <div id="f-rows" style="margin-bottom:15px;">
+                    <div class="cc-row">
+                        <span class="cc-label">Day 1</span>
+                        <input type="number" class="cc-input f-input" placeholder="0.00" oninput="calcFlex()">
+                        <button class="cc-del" onclick="this.parentElement.remove(); calcFlex()">×</button>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="ccAddRow('f')" style="background:var(--bg); color:var(--brand); width:100%; border:1.5px dashed var(--border2); margin-bottom:16px; box-shadow: none;">+ Add Trading Day</button>
+            </div>
+            <div class="premium-result" style="background:var(--white); border:2px solid var(--border); color:var(--navy);">
+                <div class="step-label" style="justify-content:center;">Revised Profit Target</div>
+                <div id="f-res-val" class="res-large" style="color:var(--brand)">$0.00</div>
+                <div id="f-breakdown" style="font-size:12px; color:var(--text3); margin-top:15px; font-weight:600; line-height: 1.5; white-space: pre-wrap;">Enter data to analyze.</div>
+            </div>
+        </div>
+        <div class="section-card" id="f-reply-card" style="display:none; margin-top:24px;">
+            <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('f-msg', this)">Copy Message</button></div>
+            <div id="f-msg" class="reply-area"></div>
         </div>
     </div>
   </div>
@@ -565,25 +602,16 @@ window.onload = () => {
     FEEDS.sort((a,b) => a.code.localeCompare(b.code)).forEach(f => {
         pnlSel.add(new Option(`${f.code} - ${f.name}`, f.code));
     });
-    btInit(); pnlRun();
+    btInit(); pnlRun(); calcFlex();
 };
 
 function updateAllMessages() {
     if(document.getElementById('l-reply-card').style.display === 'block') calcLegacy();
     if(document.getElementById('r-reply-card').style.display === 'block') calcRapid();
+    if(document.getElementById('f-reply-card').style.display === 'block') calcFlex();
     if(document.getElementById('matcher-results').style.display === 'block') runDualMatcher();
     if(document.getElementById('bt-result-area').style.display === 'block') btGenerate();
     pnlRun();
-}
-
-function copyById(id, btn) {
-    const text = document.getElementById(id).innerText;
-    const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
-    if(document.execCommand('copy')) {
-        const oldHtml = btn.innerHTML; btn.innerHTML = "✓ Copied!"; btn.classList.add('success');
-        setTimeout(() => { btn.innerHTML = oldHtml; btn.classList.remove('success'); }, 2000);
-    }
-    document.body.removeChild(ta);
 }
 
 function switchMainTab(tab) {
@@ -595,6 +623,7 @@ function setCcMode(m, btn) {
     document.querySelectorAll('#tool-consistency .pill-tab').forEach(t => t.classList.remove('active')); btn.classList.add('active');
     document.getElementById('cc-legacy-view').style.display = m === 'legacy' ? 'block' : 'none';
     document.getElementById('cc-rapid-view').style.display = m === 'rapid' ? 'block' : 'none';
+    document.getElementById('cc-flex-view').style.display = m === 'flex' ? 'block' : 'none';
 }
 
 function ccAddRow(p) {
@@ -602,10 +631,11 @@ function ccAddRow(p) {
     const dayNum = cont.children.length + 1;
     const div = document.createElement('div'); 
     div.className = 'cc-row';
+    let calcFunc = p === 'l' ? 'calcLegacy()' : (p === 'r' ? 'calcRapid()' : 'calcFlex()');
     div.innerHTML = `
         <span class="cc-label">Day ${dayNum}</span>
-        <input type="number" class="cc-input ${p}-input" placeholder="0.00" oninput="${p==='l'?'calcLegacy()':'calcRapid()'}">
-        <button class="cc-del" onclick="this.parentElement.remove(); ${p==='l'?'calcLegacy()':'calcRapid()'}">×</button>
+        <input type="number" class="cc-input ${p}-input" placeholder="0.00" oninput="${calcFunc}">
+        <button class="cc-del" onclick="this.parentElement.remove(); ${calcFunc}">×</button>
     `;
     cont.appendChild(div);
 }
@@ -634,6 +664,26 @@ function calcRapid() {
     else msg += `Your consistency ratio is within the permitted 40% limit.\n\n`;
     msg += getSignature();
     document.getElementById('r-msg').innerText = msg; document.getElementById('r-reply-card').style.display = 'block';
+}
+
+function calcFlex() {
+    const size = parseInt(document.getElementById('f-size').value);
+    let target = 2500;
+    if (size === 100000) target = 5000;
+    if (size === 150000) target = 8000;
+
+    const threshold = target * 0.40;
+    let max = 0; document.querySelectorAll('.f-input').forEach(i => { const v = parseFloat(i.value)||0; if(v > max) max = v; });
+    const isV = max > threshold, final = isV ? max / 0.4 : target, fmt = n => '$' + n.toLocaleString(undefined, {minimumFractionDigits: 2});
+    
+    document.getElementById('f-res-val').innerText = fmt(final);
+    document.getElementById('f-breakdown').innerText = `• Original Goal: ${fmt(target)}\n• 40% Threshold: ${fmt(threshold)}\n• Highest Day: ${fmt(max)}\n${isV ? `• Adjustment Math: ${fmt(max)} / 0.40 = ${fmt(final)}` : '• Status: Compliant'}`;
+    
+    let msg = `Hello,\n\nI have reviewed your Flex Challenge account performance. Your highest profit day was ${fmt(max)}.\n\nAccording to the Flex Challenge consistency rule, no single day can account for more than 40% of the profit target.\n\nDETAILED BREAKDOWN:\n• Original Profit Target: ${fmt(target)}\n• 40% Consistency Threshold: ${fmt(threshold)}\n• Your Highest Day: ${fmt(max)}\n\n`;
+    if (isV) msg += `Since your highest day exceeds this threshold, your profit target has been adjusted to ${fmt(final)}.\n\n`;
+    else msg += `Your account remains compliant as your highest single day is within the permitted threshold.\n\n`;
+    msg += getSignature();
+    document.getElementById('f-msg').innerText = msg; document.getElementById('f-reply-card').style.display = 'block';
 }
 
 // RESTORED MATCHER FUNCTIONS
@@ -742,7 +792,7 @@ function btLive() {
     const c = (activeBreachTab === 'mll') ? parseFloat(document.getElementById('bt-curr').value || 0) : parseFloat(document.getElementById('bt-dll-equity').value || 0);
     const limitM = BT_LIMITS[stage].mll[size];
     
-    // UPDATED: Fixed Flex floor trailing lock logic (FIX 1)
+    // Fixed Flex floor trailing lock logic
     let floor;
     if (stage.includes('flex')) {
         floor = Math.min(h - limitM, FLEX_LOCKS[size]);
@@ -780,7 +830,7 @@ function btGenerate() {
     const c = (activeBreachTab === 'mll') ? parseFloat(document.getElementById('bt-curr').value || 0) : parseFloat(document.getElementById('bt-dll-equity').value || 0);
     const limitM = BT_LIMITS[stage].mll[size];
     
-    // UPDATED: Fixed Flex floor trailing lock logic (FIX 1)
+    // Fixed Flex floor trailing lock logic
     let floor;
     if (stage.includes('flex')) {
         floor = Math.min(h - limitM, FLEX_LOCKS[size]);
@@ -806,7 +856,7 @@ function btGenerate() {
         if (stage.includes('flex')) {
             msg = `Thank you for reaching out, and we appreciate your patience while we reviewed your account.\n\nFollowing a detailed assessment, here is your account summary:\n\nACCOUNT REVIEW SUMMARY\nAccount Model: FundedNext Futures Flex\nHighest Balance Reached: ${fmt(h)}\n\nMaximum Loss Limit (MLL): ${fmt(floor)}\nThe Flex model uses an End-of-Day (EOD) trailing drawdown. The MLL trails ${fmt(BT_LIMITS[stage].mll[size])} below your highest balance. Once the MLL reaches the lock level of ${fmt(FLEX_LOCKS[size])}, it stops trailing and becomes a permanent fixed floor.\n\nPlease note: The Flex model has no Daily Loss Limit.\n\nCurrent Account Balance: ${fmt(c)}\nYour balance dropped to or below the MLL floor of ${fmt(floor)}, which constitutes a permanent hard breach.\n\nWe sincerely apologize for this outcome and appreciate your understanding.\n\n${getSignature()}`;
         } else {
-            // REDESIGNED: Empathic Standard MLL Breach Message Template (CHANGE 2)
+            // Empathic Standard MLL Breach Message Template
             const breachDiff = fmt(Math.abs(floor - c));
             msg = `I'm really sorry — I genuinely understand how hard this hits, and I want to take a moment to acknowledge that before anything else.\n\nLet me be as transparent as possible about what happened. FundedNext uses a trailing drawdown rule, which means the loss limit isn't fixed — it follows the highest point your account reaches.\n\nYour account peaked at ${fmt(h)}, which is something to be proud of. But at that peak, your allowable loss limit adjusted to ${fmt(floor)}. When your balance came down to ${fmt(c)}, it was ${breachDiff} below that limit, and the system flagged it automatically.\n\nI want to be honest with you — this rule is one we can't override, and it applies the same way for every trader on the platform. That doesn't make it any less painful, and I'm not going to pretend otherwise.\n\nWhat I can do is make sure you have all the information you need to decide your next move. Whatever you choose, we're here to support you through it. Please don't hesitate to ask anything at all.\n\n${getSignature()}`;
         }
@@ -814,7 +864,7 @@ function btGenerate() {
         msg = `Hello,\n\nFollowing our review, your account is currently SAFE and within all risk parameters.\n\n${getSignature()}`;
     }
     
-    // REDESIGNED: Breakdown summary card update (CHANGE 1)
+    // Breakdown summary card update
     const isBreached = (c <= floor || c <= s);
     document.getElementById('bt-breakdown-body').innerHTML = `
         <div class="bt-breakdown-row"><span>Start Balance</span><span>${fmt(s)}</span></div>
