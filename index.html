@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -187,6 +187,44 @@
     padding: 4px 8px;
     transition: transform 0.1s ease;
   }
+  .cc-del:hover { transform: scale(1.2); }
+
+  /* REDESIGNED BREACH BREAKDOWN ROWS */
+  .bt-breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: #f8f7ff;
+      border: 1.5px solid #e0e7ff;
+      font-size: 13.5px;
+      margin-bottom: 8px;
+  }
+  .bt-breakdown-row span:first-child {
+      font-weight: 600;
+      color: var(--text2);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+  }
+  .bt-breakdown-row span:last-child {
+      font-weight: 800;
+      font-family: 'Courier New', monospace;
+      color: var(--navy);
+      font-size: 15px;
+  }
+  .bt-breakdown-row.br-floor span:last-child {
+      color: var(--brand);
+  }
+  .bt-breakdown-row.br-breach span:last-child {
+      color: var(--red);
+      font-weight: 900;
+  }
+  .bt-breakdown-row.br-safe span:last-child {
+      color: var(--green);
+      font-weight: 900;
+  }
 </style>
 </head>
 <body>
@@ -216,7 +254,7 @@
     <input type="text" id="agent-name-input" placeholder="Enter Your Name" value="Tazien Morgan" oninput="updateAllMessages()">
   </div>
 
-  <!-- CONSISTENCY -->
+  <!-- ================= CONSISTENCY ================= -->
   <div id="tool-consistency" class="tool-section active">
     <div class="pill-tabs">
         <button class="pill-tab active" onclick="setCcMode('legacy', this)">Legacy / Bolt</button>
@@ -275,7 +313,7 @@
     </div>
   </div>
 
-  <!-- ACCOUNT MATCHER -->
+  <!-- ================= ACCOUNT MATCHER ================= -->
   <div id="tool-matcher" class="tool-section">
     <div class="matcher-grid">
       <div class="section-card">
@@ -344,6 +382,10 @@
                 <optgroup label="Bolt Model"><option value="bolt_ch">Bolt Challenge (Trailing)</option><option value="bolt_fn">Bolt Funded (Trailing)</option></optgroup>
                 <optgroup label="Rapid Model"><option value="rapid_ch">Rapid Challenge (Trailing)</option><option value="rapid_fn">Rapid Funded (Trailing)</option></optgroup>
                 <optgroup label="Legacy Model"><option value="legacy_ch">Legacy Challenge (Trailing)</option><option value="legacy_fn">Legacy Funded (Trailing)</option></optgroup>
+                <optgroup label="Flex Model">
+                  <option value="flex_ch">Flex Challenge (Trailing)</option>
+                  <option value="flex_fn">Flex Funded (Trailing)</option>
+                </optgroup>
             </select>
         </div>
         <div class="input-group"><label>Account Size</label><select id="bt-size" onchange="btInit()"></select></div>
@@ -361,7 +403,7 @@
           </div>
       </div>
       <div id="bt-dll-inputs" class="bt-inputs" style="display:none;">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 12px;">
             <div class="input-group"><label>Highest EOD Balance</label><input type="number" id="bt-dll-eod" oninput="btLive()"></div>
             <div class="input-group"><label>Current Balance</label><input type="number" id="bt-dll-equity" oninput="btLive()"></div>
           </div>
@@ -501,7 +543,21 @@ const BT_LIMITS = {
   rapid_ch:  { mll: { '25000': 1000, '50000': 2000, '100000': 2500 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 } },
   rapid_fn:  { mll: { '25000': 1000, '50000': 2000, '100000': 2500 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 } },
   legacy_ch: { mll: { '25000': 1000, '50000': 2000, '100000': 3000 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 } },
-  legacy_fn: { mll: { '25000': 1000, '50000': 2000, '100000': 3000 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 } }
+  legacy_fn: { mll: { '25000': 1000, '50000': 2000, '100000': 3000 }, dll: { '25000': 500, '50000': 1000, '100000': 2000 } },
+  flex_ch: { mll: { '50000': 1500, '100000': 2500, '150000': 4000 } },
+  flex_fn: { mll: { '50000': 1500, '100000': 2500, '150000': 4000 } }
+};
+
+const FLEX_LOCKS = {
+    '50000': 50100,
+    '100000': 100100,
+    '150000': 150100
+};
+
+const W_CAPS = {
+    rapid: { '25000': 800, '50000': 1500, '100000': 2500 },
+    legacy: { '25000': 3000, '50000': 6000, '100000': 6000 },
+    bolt: { '50000': [1200, 7700] }
 };
 
 window.onload = () => {
@@ -615,7 +671,7 @@ function runDualMatcher() {
     const allCh = parseAccounts(chRaw), allFn = parseAccounts(fnRaw);
     const profitTargetAccs = allCh.filter(a => a.breachedby === 'Profit Target Reached');
     
-    // RESTORED: Counter and logic for excluded accounts
+    // Counter and logic for excluded accounts
     const lastExcludedAccs = allCh.filter(a => a.breachedby !== null && a.breachedby !== 'Profit Target Reached');
     const lastNeverReachedAccs = allCh.filter(a => a.breachedby === null);
     document.getElementById('stat-excluded').innerText = lastExcludedAccs.length + lastNeverReachedAccs.length;
@@ -655,7 +711,26 @@ function toggleExcluded() {
 // BREACH TOOL LOGIC
 function btInit() {
     const stage = document.getElementById('bt-stage').value, sEl = document.getElementById('bt-size'), cur = sEl.value; sEl.innerHTML = "";
-    if(BT_LIMITS[stage]) { const sizes = stage.includes('bolt') ? ['50000'] : ['25000', '50000', '100000']; sizes.forEach(sz => sEl.add(new Option('$' + parseInt(sz).toLocaleString(), sz))); sEl.value = sizes.includes(cur) ? cur : "50000"; }
+    if(BT_LIMITS[stage]) {
+        let sizes;
+        if (stage.includes('bolt')) {
+            sizes = ['50000'];
+        } else if (stage.includes('flex')) {
+            sizes = ['50000', '100000', '150000'];
+        } else {
+            sizes = ['25000', '50000', '100000'];
+        }
+        sizes.forEach(sz => sEl.add(new Option('$' + parseInt(sz).toLocaleString(), sz)));
+        sEl.value = sizes.includes(cur) ? cur : "50000";
+
+        const dllTab = document.getElementById('bt-tab-dll');
+        if (stage.includes('flex')) {
+            dllTab.style.display = 'none';
+            setBtTab('mll', document.getElementById('bt-tab-mll'));
+        } else {
+            dllTab.style.display = 'inline-block';
+        }
+    }
     btLive();
 }
 function btToggleWithdrawal() { document.getElementById('bt-w-inputs').style.display = document.getElementById('bt-w-check').checked ? 'block' : 'none'; btLive(); }
@@ -665,7 +740,16 @@ function btLive() {
     const fmt = n => '$' + parseFloat(n).toLocaleString(undefined, {minimumFractionDigits: 2});
     const start = parseFloat(document.getElementById('bt-start').value || 0), h = parseFloat(document.getElementById('bt-high').value || 0);
     const c = (activeBreachTab === 'mll') ? parseFloat(document.getElementById('bt-curr').value || 0) : parseFloat(document.getElementById('bt-dll-equity').value || 0);
-    const limitM = BT_LIMITS[stage].mll[size], floor = Math.min(start, h - limitM);
+    const limitM = BT_LIMITS[stage].mll[size];
+    
+    // UPDATED: Fixed Flex floor trailing lock logic (FIX 1)
+    let floor;
+    if (stage.includes('flex')) {
+        floor = Math.min(h - limitM, FLEX_LOCKS[size]);
+    } else {
+        floor = Math.min(start, h - limitM); 
+    }
+    
     const isBreachConfirmed = document.getElementById('bt-breach-confirm').checked;
 
     const wChecked = document.getElementById('bt-w-check').checked, wReq = parseFloat(document.getElementById('bt-w-req').value || 0);
@@ -694,7 +778,16 @@ function btGenerate() {
     const stage = document.getElementById('bt-stage').value, size = document.getElementById('bt-size').value, fmt = n => '$' + parseFloat(n).toLocaleString(undefined, {minimumFractionDigits: 2});
     const s = parseFloat(document.getElementById('bt-start').value || 0), h = parseFloat(document.getElementById('bt-high').value || 0);
     const c = (activeBreachTab === 'mll') ? parseFloat(document.getElementById('bt-curr').value || 0) : parseFloat(document.getElementById('bt-dll-equity').value || 0);
-    const limitM = BT_LIMITS[stage].mll[size], floor = Math.min(s, h - limitM);
+    const limitM = BT_LIMITS[stage].mll[size];
+    
+    // UPDATED: Fixed Flex floor trailing lock logic (FIX 1)
+    let floor;
+    if (stage.includes('flex')) {
+        floor = Math.min(h - limitM, FLEX_LOCKS[size]);
+    } else {
+        floor = Math.min(s, h - limitM); 
+    }
+    
     const wTicked = document.getElementById('bt-w-check').checked, wReq = parseFloat(document.getElementById('bt-w-req').value || 0);
     const isBreachConfirmed = document.getElementById('bt-breach-confirm').checked;
 
@@ -710,11 +803,26 @@ function btGenerate() {
         const postWBal = c - wReq, wFloor = stage.includes('bolt') ? 50100 : s;
         msg = `Thank you for reaching out.\n\nFollowing our review, your withdrawal request was identified as the cause of the breach.\n\nNote: Withdrawing 100% of profit carries this risk if buffer is not maintained.\n\nThis constitutes a permanent hard breach.\n\n${getSignature()}`;
     } else if (c <= floor || c <= s) {
-        msg = `Thank you for reaching out.\n\nFollowing a detailed assessment, here is your summary:\n\nHighest Balance Reached: ${fmt(h)}\nMaximum Loss Limit (MLL): ${fmt(floor)}\n\nCurrent Account Balance: ${fmt(c)}\nYour balance dropped below the ${fmt(floor)} threshold, which constitutes a permanent hard breach.\n\n${getSignature()}`;
+        if (stage.includes('flex')) {
+            msg = `Thank you for reaching out, and we appreciate your patience while we reviewed your account.\n\nFollowing a detailed assessment, here is your account summary:\n\nACCOUNT REVIEW SUMMARY\nAccount Model: FundedNext Futures Flex\nHighest Balance Reached: ${fmt(h)}\n\nMaximum Loss Limit (MLL): ${fmt(floor)}\nThe Flex model uses an End-of-Day (EOD) trailing drawdown. The MLL trails ${fmt(BT_LIMITS[stage].mll[size])} below your highest balance. Once the MLL reaches the lock level of ${fmt(FLEX_LOCKS[size])}, it stops trailing and becomes a permanent fixed floor.\n\nPlease note: The Flex model has no Daily Loss Limit.\n\nCurrent Account Balance: ${fmt(c)}\nYour balance dropped to or below the MLL floor of ${fmt(floor)}, which constitutes a permanent hard breach.\n\nWe sincerely apologize for this outcome and appreciate your understanding.\n\n${getSignature()}`;
+        } else {
+            // REDESIGNED: Empathic Standard MLL Breach Message Template (CHANGE 2)
+            const breachDiff = fmt(Math.abs(floor - c));
+            msg = `I'm really sorry — I genuinely understand how hard this hits, and I want to take a moment to acknowledge that before anything else.\n\nLet me be as transparent as possible about what happened. FundedNext uses a trailing drawdown rule, which means the loss limit isn't fixed — it follows the highest point your account reaches.\n\nYour account peaked at ${fmt(h)}, which is something to be proud of. But at that peak, your allowable loss limit adjusted to ${fmt(floor)}. When your balance came down to ${fmt(c)}, it was ${breachDiff} below that limit, and the system flagged it automatically.\n\nI want to be honest with you — this rule is one we can't override, and it applies the same way for every trader on the platform. That doesn't make it any less painful, and I'm not going to pretend otherwise.\n\nWhat I can do is make sure you have all the information you need to decide your next move. Whatever you choose, we're here to support you through it. Please don't hesitate to ask anything at all.\n\n${getSignature()}`;
+        }
     } else {
         msg = `Hello,\n\nFollowing our review, your account is currently SAFE and within all risk parameters.\n\n${getSignature()}`;
     }
-    document.getElementById('bt-breakdown-body').innerHTML = `<div class="bt-breakdown-row"><span>Start Balance</span><span>${fmt(s)}</span></div><div class="bt-breakdown-row"><span>Highest reached</span><span>${fmt(h)}</span></div><div class="bt-breakdown-row"><span>Floor Level</span><span>${fmt(floor)}</span></div><div class="bt-breakdown-row"><span>Current Balance</span><span>${fmt(c)}</span></div>`;
+    
+    // REDESIGNED: Breakdown summary card update (CHANGE 1)
+    const isBreached = (c <= floor || c <= s);
+    document.getElementById('bt-breakdown-body').innerHTML = `
+        <div class="bt-breakdown-row"><span>Start Balance</span><span>${fmt(s)}</span></div>
+        <div class="bt-breakdown-row"><span>Highest Balance Reached</span><span>${fmt(h)}</span></div>
+        <div class="bt-breakdown-row br-floor"><span>MLL Floor Level</span><span>${fmt(floor)}</span></div>
+        <div class="bt-breakdown-row ${isBreached ? 'br-breach' : 'br-safe'}"><span>Current Balance</span><span>${fmt(c)}</span></div>
+    `;
+    
     document.getElementById('bt-text').innerText = msg; document.getElementById('bt-result-area').style.display = 'block';
 }
 
@@ -738,7 +846,7 @@ function pnlRun() {
     document.getElementById('pnl-math-detail').innerText = `(${signedTicks} Tks x ${fmt(a?a.val:0)} x ${q}) - ${fmt(totalComm)} = ${fmt(net)}`;
     document.getElementById('pnl-pill').innerText = net >= 0 ? "Net Profit" : "Net Loss"; document.getElementById('pnl-pill').className = `badge-pnl ${net >= 0 ? 'profit' : 'loss'}`;
     
-    let msg = `Hello,\n\nI have performed a detailed assessment of your trade on ${a ? a.name : 'the selected instrument'}.\n\nSection 1 — TRADE P&L BREAKDOWN:\n• Instrument: ${a ? a.name : ''}\n• Side: ${pnlSide.toUpperCase()}\n• Entry Price: ${en.toFixed(2)} | Exit Price: ${ex.toFixed(2)}\n• Price Movement: ${Math.abs(diff).toFixed(2)} Points (${absTicks} Ticks)\n• Tick Value: ${fmt(a ? a.val : 0)}\n• Gross P&L Calculation: (${signedTicks} Ticks x ${fmt(a ? a.val : 0)}) x ${q} Contracts = ${fmt(gross)}\n\nSection 2 — COMMISSION BREAKDOWN:\n• Instrument Rate: ${fmt(sideCost)} per side\n• Sides applied: 2 (Entry + Exit)\n• Total Contracts: ${q}\n• Total Commission Calculation: (${fmt(sideCost)} x 2) x ${q} = ${fmt(totalComm)}\n\nFINAL SUMMARY:\n• Gross P&L: ${fmt(gross)}\n• Total Commission: -${fmt(totalComm)}\n• Net P&L: ${fmt(net)}\n\nYour trade resulted in a final Net ${net >= 0 ? 'Profit' : 'Loss'} of ${fmt(Math.abs(net))}.\n\n${getSignature()}`;
+    let msg = `Hello,\n\nI have performed a detailed assessment of your trade on ${a ? a.name : 'the selected instrument'}.\n\nSection 1 — TRADE P&L BREAKDOWN:\n• Instrument: ${a ? a.name : ''}\n• Side: ${pnlSide.toUpperCase()}\n• Entry Price: ${en.toFixed(2)} | Exit Price: ${ex.toFixed(2)}\n• Price Movement: ${Math.abs(diff).toFixed(2)} Points (${absTicks} Ticks)\n• Tick Value: ${fmt(a ? a.val : 0)}\n• Gross P&L Calculation: (${signedTicks} Tks x ${fmt(a ? a.val : 0)}) x ${q} Contracts = ${fmt(gross)}\n\nSection 2 — COMMISSION BREAKDOWN:\n• Instrument Rate: ${fmt(sideCost)} per side\n• Sides applied: 2 (Entry + Exit)\n• Total Contracts: ${q}\n• Total Commission Calculation: (${fmt(sideCost)} x 2) x ${q} = ${fmt(totalComm)}\n\nFINAL SUMMARY:\n• Gross P&L: ${fmt(gross)}\n• Total Commission: -${fmt(totalComm)}\n• Net P&L: ${fmt(net)}\n\nYour trade resulted in a final Net ${net >= 0 ? 'Profit' : 'Loss'} of ${fmt(Math.abs(net))}.\n\n${getSignature()}`;
     
     document.getElementById('pnl-reply').innerText = msg;
 }
