@@ -282,7 +282,7 @@
             </div>
         </div>
         <div class="section-card" id="l-reply-card" style="display:none; margin-top:24px;">
-            <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('l-msg', this)">Copy Message</button></div>
+            <div class="section-card-header"><button class="btn-copy-premium" onclick="!function(b){var t=document.getElementById('l-msg').innerText,ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);var o=b.innerHTML;b.innerHTML='✓ Copied!';b.classList.add('success');setTimeout(function(){b.innerHTML=o;b.classList.remove('success')},2000)}(this)">Copy Message</button></div>
             <div id="l-msg" class="reply-area"></div>
         </div>
     </div>
@@ -308,7 +308,7 @@
             </div>
         </div>
         <div class="section-card" id="r-reply-card" style="display:none; margin-top:24px;">
-            <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('r-msg', this)">Copy Message</button></div>
+            <div class="section-card-header"><button class="btn-copy-premium" onclick="!function(b){var t=document.getElementById('r-msg').innerText,ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);var o=b.innerHTML;b.innerHTML='✓ Copied!';b.classList.add('success');setTimeout(function(){b.innerHTML=o;b.classList.remove('success')},2000)}(this)">Copy Message</button></div>
             <div id="r-msg" class="reply-area"></div>
         </div>
     </div>
@@ -344,7 +344,7 @@
             </div>
         </div>
         <div class="section-card" id="f-reply-card" style="display:none; margin-top:24px;">
-            <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('f-msg', this)">Copy Message</button></div>
+            <div class="section-card-header"><button class="btn-copy-premium" onclick="!function(b){var t=document.getElementById('f-msg').innerText,ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);var o=b.innerHTML;b.innerHTML='✓ Copied!';b.classList.add('success');setTimeout(function(){b.innerHTML=o;b.classList.remove('success')},2000)}(this)">Copy Message</button></div>
             <div id="f-msg" class="reply-area"></div>
         </div>
     </div>
@@ -390,7 +390,7 @@
         <div class="section-card">
             <div class="section-card-header">
                 <span class="step-label" style="margin-bottom:0">Eligible for Conversion</span>
-                <button class="btn-copy-premium" id="btn-copy-matcher" onclick="copyById('matcher-text', this)">✉ Copy Client Reply</button>
+                <button class="btn-copy-premium" id="btn-copy-matcher" onclick="!function(b){var t=document.getElementById('matcher-text').innerText,ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);var o=b.innerHTML;b.innerHTML='✓ Copied!';b.classList.add('success');setTimeout(function(){b.innerHTML=o;b.classList.remove('success')},2000)}(this)">✉ Copy Client Reply</button>
             </div>
             <div class="reply-area" id="matcher-text"></div>
             <table>
@@ -483,7 +483,7 @@
     <div id="bt-result-area" style="display:none; margin-top:24px;">
       <div class="section-card"><div id="bt-breakdown-body" style="padding: 20px; display: flex; flex-direction: column; gap: 2px;"></div></div>
       <div class="section-card" id="bt-reply-card">
-          <div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('bt-text', this)">Copy Message</button></div>
+          <div class="section-card-header"><button class="btn-copy-premium" onclick="!function(b){var t=document.getElementById('bt-text').innerText,ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);var o=b.innerHTML;b.innerHTML='✓ Copied!';b.classList.add('success');setTimeout(function(){b.innerHTML=o;b.classList.remove('success')},2000)}(this)">Copy Message</button></div>
           <div id="bt-text" class="reply-area"></div>
       </div>
       <div id="bt-internal-error" class="escalation-banner" style="display:none; border-color:var(--red); background:var(--red-light); color:var(--red);">
@@ -492,7 +492,7 @@
     </div>
   </div>
 
-  <!-- P&L + COMMISSION MERGED -->
+  <!-- P&L + COMMISSION -->
   <div id="tool-pnl-comm" class="tool-section">
     <div class="calc-container">
         <div class="section-card" style="padding:24px;">
@@ -513,7 +513,7 @@
             </div>
         </div>
     </div>
-    <div class="section-card" style="margin-top:24px;"><div class="section-card-header"><button class="btn-copy-premium" onclick="copyById('pnl-reply', this)">Copy Message</button></div><div id="pnl-reply" class="reply-area"></div></div>
+    <div class="section-card" style="margin-top:24px;"><div class="section-card-header"><button class="btn-copy-premium" onclick="!function(b){var t=document.getElementById('pnl-reply').innerText,ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);var o=b.innerHTML;b.innerHTML='✓ Copied!';b.classList.add('success');setTimeout(function(){b.innerHTML=o;b.classList.remove('success')},2000)}(this)">Copy Message</button></div><div id="pnl-reply" class="reply-area"></div></div>
   </div>
 
 </div>
